@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct capstone2App: App {
@@ -13,5 +14,6 @@ struct capstone2App: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: SymptomEntry.self)
     }
 }
