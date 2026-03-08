@@ -307,3 +307,7 @@ struct SymptomLogView: View {
         .animation(.spring(response: 0.4), value: viewModel.isSaved)
     }
 }
+
+#Preview {
+    SymptomLogView()
+}
