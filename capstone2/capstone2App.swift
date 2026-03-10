@@ -14,6 +14,8 @@ struct capstone2App: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: SymptomEntry.self)
+        .modelContainer(for: [SymptomEntry.self, Habit.self])
     }
 }
+
+

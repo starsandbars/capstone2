@@ -18,6 +18,8 @@ struct ContentView: View {
                 .tabItem{
                     Label("Log", systemImage: "note.text")
                 }
+            HabitView()
+                .tabItem{Label("Habits", systemImage: "checkmark.circle.fill")}
 
         }
     }
