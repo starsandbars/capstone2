@@ -4,7 +4,7 @@ import SwiftData
 
 @Observable
 class SymptomLogViewModel {
-    
+
     // MARK: - State
     var selectedSymptoms: [LoggedSymptom] = []
     var mentalHealthScore: Int = 5
@@ -15,15 +15,31 @@ class SymptomLogViewModel {
     var customSymptomCategory: SymptomCategory = .other
     var isSaved = false
     var showingSaveConfirmation = false
-    
+
     // MARK: - Today's date string
     var todayFormatted: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMMM d"
         return formatter.string(from: Date())
     }
-    
-    // MARK: - Severity color helper
+
+    // MARK: - Load today's existing entry into the form
+    /// Call this on .onAppear so edits to an existing day's log pre-populate the UI.
+    func loadTodayEntry(from entries: [SymptomEntry]) {
+        guard let todayEntry = entries.first(where: {
+            Calendar.current.isDateInToday($0.date)
+        }) else { return }
+
+        // Only pre-populate if the user hasn't started editing yet
+        if selectedSymptoms.isEmpty {
+            selectedSymptoms = todayEntry.symptoms
+            mentalHealthScore = todayEntry.mentalHealthScore
+            notes = todayEntry.notes
+            isSaved = true  // show "Saved" state since data already exists
+        }
+    }
+
+    // MARK: - Severity / mental health helpers
     func severityColor(for score: Int) -> Color {
         switch score {
         case 1...3: return Color("severityLow")
@@ -32,7 +48,7 @@ class SymptomLogViewModel {
         default: return .gray
         }
     }
-    
+
     func severityLabel(for score: Int) -> String {
         switch score {
         case 1...3: return "Mild"
@@ -41,7 +57,7 @@ class SymptomLogViewModel {
         default: return ""
         }
     }
-    
+
     func mentalHealthLabel(for score: Int) -> String {
         switch score {
         case 1...2: return "Very Low"
@@ -52,7 +68,7 @@ class SymptomLogViewModel {
         default: return ""
         }
     }
-    
+
     func mentalHealthColor(for score: Int) -> Color {
         switch score {
         case 1...3: return Color("severityHigh")
@@ -61,54 +77,90 @@ class SymptomLogViewModel {
         default: return .gray
         }
     }
-    
-    // MARK: - Add / Remove symptom
+
+    // MARK: - Add / Toggle symptom
     func toggleSymptom(_ symptom: CommonSymptom) {
         if let idx = selectedSymptoms.firstIndex(where: { $0.name == symptom.name }) {
             selectedSymptoms.remove(at: idx)
         } else {
             selectedSymptoms.append(LoggedSymptom(name: symptom.name, category: symptom.category))
         }
+        // Reset saved state so user knows they need to re-save
+        isSaved = false
     }
-    
+
     func isSelected(_ symptom: CommonSymptom) -> Bool {
         selectedSymptoms.contains(where: { $0.name == symptom.name })
     }
-    
+
     func updateSeverity(for symptomName: String, severity: Int) {
         if let idx = selectedSymptoms.firstIndex(where: { $0.name == symptomName }) {
             selectedSymptoms[idx].severity = severity
         }
+        isSaved = false
     }
-    
-    func removeSymptom(_ symptom: LoggedSymptom) {
+
+    /// Remove a symptom from the in-memory list AND update/delete the SwiftData entry for today.
+    func removeSymptom(_ symptom: LoggedSymptom, context: ModelContext, allEntries: [SymptomEntry]) {
+        // 1. Remove from in-memory list
         selectedSymptoms.removeAll { $0.id == symptom.id }
+        isSaved = false
+
+        // 2. Find today's SwiftData entry
+        guard let todayEntry = allEntries.first(where: {
+            Calendar.current.isDateInToday($0.date)
+        }) else { return }
+
+        if selectedSymptoms.isEmpty {
+            // No symptoms left at all — delete the whole entry
+            context.delete(todayEntry)
+        } else {
+            // Update the entry with the symptom removed
+            todayEntry.symptoms.removeAll { $0.name == symptom.name }
+        }
+
+        try? context.save()
     }
-    
+
     func addCustomSymptom() {
         guard !customSymptomName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-        let symptom = LoggedSymptom(name: customSymptomName.trimmingCharacters(in: .whitespaces),
-                                    category: customSymptomCategory)
+        let symptom = LoggedSymptom(
+            name: customSymptomName.trimmingCharacters(in: .whitespaces),
+            category: customSymptomCategory
+        )
         selectedSymptoms.append(symptom)
         customSymptomName = ""
         showingCustomSymptom = false
+        isSaved = false
     }
-    
+
     // MARK: - Copy from yesterday
     func copyYesterdaySymptoms(from entries: [SymptomEntry]) {
         let calendar = Calendar.current
         let yesterday = calendar.date(byAdding: .day, value: -1, to: Date())!
-        if let yesterdayEntry = entries.first(where: { calendar.isDate($0.date, inSameDayAs: yesterday) }) {
-            for symptom in yesterdayEntry.symptoms {
-                if !selectedSymptoms.contains(where: { $0.name == symptom.name }) {
-                    selectedSymptoms.append(symptom)
-                }
+        guard let yesterdayEntry = entries.first(where: {
+            calendar.isDate($0.date, inSameDayAs: yesterday)
+        }) else { return }
+
+        for symptom in yesterdayEntry.symptoms {
+            if !selectedSymptoms.contains(where: { $0.name == symptom.name }) {
+                selectedSymptoms.append(symptom)
             }
         }
+        isSaved = false
     }
-    
-    // MARK: - Save entry
-    func saveEntry(context: ModelContext) {
+
+    // MARK: - Save entry (upsert: delete today's existing entry first, then insert fresh)
+    func saveEntry(context: ModelContext, allEntries: [SymptomEntry]) {
+        // Delete any existing entry for today before saving the new one
+        let todayEntries = allEntries.filter {
+            Calendar.current.isDateInToday($0.date)
+        }
+        for existing in todayEntries {
+            context.delete(existing)
+        }
+
+        // Insert the fresh, up-to-date entry
         let entry = SymptomEntry(
             date: Date(),
             symptoms: selectedSymptoms,
@@ -117,15 +169,18 @@ class SymptomLogViewModel {
         )
         context.insert(entry)
         try? context.save()
+
         showingSaveConfirmation = true
         isSaved = true
     }
-    
+
     // MARK: - Past symptoms for quick access
     func pastSymptomNames(from entries: [SymptomEntry]) -> [CommonSymptom] {
         var seen = Set<String>()
         var result: [CommonSymptom] = []
-        for entry in entries.prefix(14) {
+        // Skip today's entry so we don't show current symptoms as "recent"
+        let pastEntries = entries.filter { !Calendar.current.isDateInToday($0.date) }
+        for entry in pastEntries.prefix(14) {
             for s in entry.symptoms {
                 if !seen.contains(s.name) {
                     seen.insert(s.name)

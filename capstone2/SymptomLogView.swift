@@ -1,10 +1,14 @@
 import SwiftUI
 import SwiftData
 
+enum LogTab { case symptoms, wellbeing }
+
 struct SymptomLogView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \SymptomEntry.date, order: .reverse) private var entries: [SymptomEntry]
     @State private var viewModel = SymptomLogViewModel()
+    @State private var activeTab: LogTab = .wellbeing
+    @State private var showingExport = false
 
     var body: some View {
         NavigationStack {
@@ -15,31 +19,55 @@ struct SymptomLogView: View {
                     VStack(spacing: 0) {
                         headerSection
 
-                        VStack(spacing: 28) {
-                            mentalHealthSection
-                            quickActionsRow
+                        tabSwitcher
+                            .padding(.horizontal, 20)
+                            .padding(.top, 20)
+                            .padding(.bottom, 4)
 
-                            if viewModel.showingCustomSymptom {
-                                CustomSymptomInputView(viewModel: viewModel)
-                                    .transition(.opacity.combined(with: .move(edge: .top)))
+                        if activeTab == .wellbeing {
+                            VStack(spacing: 24) {
+                                mentalHealthSection
+                                notesSection
+                                Spacer().frame(height: 110)
                             }
+                            .padding(.horizontal, 20)
+                            .padding(.top, 20)
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .leading).combined(with: .opacity),
+                                removal: .move(edge: .leading).combined(with: .opacity)
+                            ))
+                        } else {
+                            VStack(spacing: 24) {
+                                quickActionsRow
 
-                            if !viewModel.selectedSymptoms.isEmpty {
-                                selectedSymptomsSection
+                                if viewModel.showingCustomSymptom {
+                                    CustomSymptomInputView(viewModel: viewModel)
+                                        .transition(.opacity.combined(with: .move(edge: .top)))
+                                }
+
+                                if !viewModel.selectedSymptoms.isEmpty {
+                                    selectedSymptomsSection
+                                }
+
+                                symptomPickerSection
+                                Spacer().frame(height: 110)
                             }
-
-                            symptomPickerSection
-                            notesSection
-                            Spacer().frame(height: 110)
+                            .padding(.horizontal, 20)
+                            .padding(.top, 20)
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .trailing).combined(with: .opacity),
+                                removal: .move(edge: .trailing).combined(with: .opacity)
+                            ))
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 24)
                     }
                 }
 
                 saveButton
             }
             .navigationBarHidden(true)
+        }
+        .onAppear {
+            viewModel.loadTodayEntry(from: entries)
         }
         .overlay(alignment: .top) {
             if viewModel.showingSaveConfirmation {
@@ -56,6 +84,10 @@ struct SymptomLogView: View {
         }
         .animation(.spring(response: 0.4), value: viewModel.showingSaveConfirmation)
         .animation(.spring(response: 0.35), value: viewModel.showingCustomSymptom)
+        .animation(.spring(response: 0.4), value: activeTab)
+        .sheet(isPresented: $showingExport) {
+            PDFExportView()
+        }
     }
 
     // MARK: - Header
@@ -73,7 +105,7 @@ struct SymptomLogView: View {
                     .foregroundStyle(Color("textPrimary"))
             }
             Spacer()
-            Button { } label: {
+            Button { showingExport = true } label: {
                 Image(systemName: "arrow.up.doc")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundStyle(Color("accentTeal"))
@@ -87,10 +119,73 @@ struct SymptomLogView: View {
         .padding(.bottom, 4)
     }
 
+    // MARK: - Tab Switcher
+    var tabSwitcher: some View {
+        HStack(spacing: 0) {
+            tabButton(
+                title: "Symptoms",
+                icon: "list.bullet.clipboard",
+                tab: .symptoms,
+                badge: viewModel.selectedSymptoms.isEmpty ? nil : "\(viewModel.selectedSymptoms.count)"
+            )
+            tabButton(
+                title: "Mental Health",
+                icon: "heart.fill",
+                tab: .wellbeing,
+                badge: nil
+            )
+           
+        }
+        .padding(4)
+        .background(Color("chipBackground"))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+
+    func tabButton(title: String, icon: String, tab: LogTab, badge: String?) -> some View {
+        let isActive = activeTab == tab
+        return Button {
+            withAnimation(.spring(response: 0.35)) { activeTab = tab }
+        } label: {
+            HStack(spacing: 7) {
+                Image(systemName: icon)
+                    .font(.system(size: 13, weight: .semibold))
+                Text(title)
+                    .font(.system(size: 15, weight: .semibold))
+                if let badge {
+                    Text(badge)
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 2)
+                        .background(isActive ? Color.white.opacity(0.3) : Color("accentTeal"))
+                        .clipShape(Capsule())
+                }
+            }
+            .foregroundStyle(isActive ? .white : Color("textSecondary"))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 11)
+            .background(
+                Group {
+                    if isActive {
+                        RoundedRectangle(cornerRadius: 11)
+                            .fill(tab == .wellbeing
+                                  ? mentalHealthAccent(for: viewModel.mentalHealthScore)
+                                  : Color("accentTeal"))
+                            .shadow(color: (tab == .wellbeing
+                                           ? mentalHealthAccent(for: viewModel.mentalHealthScore)
+                                           : Color("accentTeal")).opacity(0.3),
+                                    radius: 8, y: 3)
+                    } else {
+                        RoundedRectangle(cornerRadius: 11).fill(Color.clear)
+                    }
+                }
+            )
+        }
+    }
+
     // MARK: - Mental Health Hero
     var mentalHealthSection: some View {
         VStack(spacing: 0) {
-            // Gradient header band
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
@@ -134,9 +229,7 @@ struct SymptomLogView: View {
             .clipShape(UnevenRoundedRectangle(topLeadingRadius: 20, bottomLeadingRadius: 0,
                                                bottomTrailingRadius: 0, topTrailingRadius: 20))
 
-            // Slider body
             VStack(spacing: 16) {
-                // Emoji + label side by side
                 HStack(spacing: 16) {
                     Text(mentalHealthEmoji(for: viewModel.mentalHealthScore))
                         .font(.system(size: 48))
@@ -148,7 +241,7 @@ struct SymptomLogView: View {
                             .foregroundStyle(mentalHealthAccent(for: viewModel.mentalHealthScore))
                             .animation(.easeInOut(duration: 0.2), value: viewModel.mentalHealthScore)
                         Text(mentalHealthDescription(for: viewModel.mentalHealthScore))
-                            .font(.system(size: 13, weight: .regular))
+                            .font(.system(size: 13))
                             .foregroundStyle(Color("textSecondary"))
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -156,6 +249,7 @@ struct SymptomLogView: View {
                 }
 
                 MentalHealthStepBar(value: $viewModel.mentalHealthScore)
+                    .onChange(of: viewModel.mentalHealthScore) { viewModel.isSaved = false }
 
                 HStack {
                     Text("Very difficult")
@@ -265,7 +359,7 @@ struct SymptomLogView: View {
             VStack(spacing: 10) {
                 ForEach($viewModel.selectedSymptoms) { $symptom in
                     SymptomSeverityCard(symptom: $symptom) {
-                        withAnimation(.spring(response: 0.3)) { viewModel.removeSymptom(symptom) }
+                        withAnimation(.spring(response: 0.3)) { viewModel.removeSymptom(symptom, context: modelContext, allEntries: entries) }
                     }
                 }
             }
@@ -336,6 +430,7 @@ struct SymptomLogView: View {
                     .scrollContentBackground(.hidden)
                     .frame(minHeight: 96)
                     .padding(14)
+                    .onChange(of: viewModel.notes) { viewModel.isSaved = false }
             }
         }
     }
@@ -350,7 +445,7 @@ struct SymptomLogView: View {
             .frame(height: 28)
 
             Button {
-                withAnimation(.spring(response: 0.4)) { viewModel.saveEntry(context: modelContext) }
+                withAnimation(.spring(response: 0.4)) { viewModel.saveEntry(context: modelContext, allEntries: entries) }
                 UIImpactFeedbackGenerator(style: .medium).impactOccurred()
             } label: {
                 HStack(spacing: 10) {
