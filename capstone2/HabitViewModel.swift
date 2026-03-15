@@ -64,7 +64,7 @@ class HabitViewModel {
             description: newDescription,
             category: newCategory,
             frequency: newFrequency,
-            emoji: newEmoji,
+            emoji: "⭐️",
             notificationHour: newNotifHour,
             notificationMinute: newNotifMinute
         )

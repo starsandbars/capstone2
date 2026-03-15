@@ -461,16 +461,95 @@ struct SaveConfirmationBanner: View {
     }
 }
 
-//// Hex color init (shared, used in this file too)
-//extension Color {
-//    fileprivate init(hex: String) {
-//        let h = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-//        var int: UInt64 = 0
-//        Scanner(string: h).scanHexInt64(&int)
-//        self.init(
-//            red: Double((int >> 16) & 0xFF) / 255,
-//            green: Double((int >> 8) & 0xFF) / 255,
-//            blue: Double(int & 0xFF) / 255
-//        )
-//    }
-//}
+
+
+// MARK: - Emotional Question Card
+struct EmotionalQuestionCard: View {
+    let question: String
+    let detail: String          // soft explanatory subtext
+    let icon: String
+    let accentColor: Color
+    @Binding var value: Int
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Question header
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: icon)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(accentColor)
+                    .frame(width: 36, height: 36)
+                    .background(accentColor.opacity(0.12))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(question)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Color("textPrimary"))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(detail)
+                        .font(.system(size: 12))
+                        .foregroundStyle(Color("textTertiary"))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer()
+
+                // Score pill
+                Text("\(value)")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(accentColor)
+                    .frame(width: 38, height: 38)
+                    .background(accentColor.opacity(0.1))
+                    .clipShape(Circle())
+                    .contentTransition(.numericText())
+                    .animation(.spring(response: 0.25), value: value)
+            }
+
+            // Dot-step selector
+            HStack(spacing: 5) {
+                ForEach(1...10, id: \.self) { i in
+                    Button {
+                        withAnimation(.spring(response: 0.25)) { value = i }
+                        UISelectionFeedbackGenerator().selectionChanged()
+                    } label: {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(i <= value ? accentColor : Color("sliderTrack"))
+                            .frame(height: i == value ? 20 : 10)
+                            .animation(.spring(response: 0.2), value: value)
+                    }
+                }
+            }
+            .frame(height: 22)
+
+            // Low / High labels
+            HStack {
+                Text("Not at all")
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(Color("textTertiary"))
+                Spacer()
+                Text(highLabel)
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(Color("textTertiary"))
+            }
+        }
+        .padding(18)
+        .background(Color("cardBackground"))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(value >= 7 ? accentColor.opacity(0.3) : Color("borderColor"), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
+        .animation(.easeInOut(duration: 0.2), value: value)
+    }
+
+    var highLabel: String {
+        switch icon {
+        case "flame.fill":         return "Very angry"
+        case "cloud.rain.fill":    return "Very anxious"
+        case "person.fill.xmark":  return "Very isolated"
+        case "scalemass.fill":     return "Overwhelmingly heavy"
+        default:                   return "Intensely"
+        }
+    }
+}

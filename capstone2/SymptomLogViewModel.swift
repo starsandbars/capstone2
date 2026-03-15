@@ -8,6 +8,10 @@ class SymptomLogViewModel {
     // MARK: - State
     var selectedSymptoms: [LoggedSymptom] = []
     var mentalHealthScore: Int = 5
+    var angerScore: Int = 1
+    var anxietyScore: Int = 1
+    var lonelinessScore: Int = 1
+    var heavinessScore: Int = 1
     var notes: String = ""
     var showingSymptomPicker = false
     var showingCustomSymptom = false
@@ -34,8 +38,12 @@ class SymptomLogViewModel {
         if selectedSymptoms.isEmpty {
             selectedSymptoms = todayEntry.symptoms
             mentalHealthScore = todayEntry.mentalHealthScore
+            angerScore = todayEntry.angerScore
+            anxietyScore = todayEntry.anxietyScore
+            lonelinessScore = todayEntry.lonelinessScore
+            heavinessScore = todayEntry.heavinessScore
             notes = todayEntry.notes
-            isSaved = true  // show "Saved" state since data already exists
+            isSaved = true
         }
     }
 
@@ -165,6 +173,10 @@ class SymptomLogViewModel {
             date: Date(),
             symptoms: selectedSymptoms,
             mentalHealthScore: mentalHealthScore,
+            angerScore: angerScore,
+            anxietyScore: anxietyScore,
+            lonelinessScore: lonelinessScore,
+            heavinessScore: heavinessScore,
             notes: notes
         )
         context.insert(entry)

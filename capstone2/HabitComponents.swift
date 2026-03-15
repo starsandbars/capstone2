@@ -129,38 +129,14 @@ struct AddHabitSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    let emojiOptions = ["⭐️","🚶","🧘","💧","🥗","🍎","🌿","📓","🙏","📞","🏠","🌙","😴","💊","🔍","🎯","📚","🎨","🎵","💪"]
 
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
 
-                    // Emoji picker + title
+                    // Title + description
                     VStack(spacing: 12) {
-                        // Emoji row
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 10) {
-                                ForEach(emojiOptions, id: \.self) { emoji in
-                                    Button {
-                                        withAnimation(.spring(response: 0.25)) { viewModel.newEmoji = emoji }
-                                    } label: {
-                                        Text(emoji)
-                                            .font(.system(size: 24))
-                                            .frame(width: 48, height: 48)
-                                            .background(viewModel.newEmoji == emoji
-                                                        ? Color("accentTeal").opacity(0.15)
-                                                        : Color("chipBackground"))
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                            .overlay(RoundedRectangle(cornerRadius: 12)
-                                                .stroke(viewModel.newEmoji == emoji
-                                                        ? Color("accentTeal") : Color.clear, lineWidth: 2))
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 1)
-                        }
-
                         TextField("Habit name…", text: $viewModel.newTitle)
                             .font(.system(size: 17, weight: .semibold))
                             .padding(16)

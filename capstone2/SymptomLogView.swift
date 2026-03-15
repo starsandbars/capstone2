@@ -1,7 +1,8 @@
+
 import SwiftUI
 import SwiftData
 
-enum LogTab { case symptoms, wellbeing }
+enum LogTab { case wellbeing, symptoms }
 
 struct SymptomLogView: View {
     @Environment(\.modelContext) private var modelContext
@@ -134,7 +135,6 @@ struct SymptomLogView: View {
                 tab: .wellbeing,
                 badge: nil
             )
-           
         }
         .padding(4)
         .background(Color("chipBackground"))
@@ -185,6 +185,7 @@ struct SymptomLogView: View {
 
     // MARK: - Mental Health Hero
     var mentalHealthSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
         VStack(spacing: 0) {
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
@@ -269,6 +270,57 @@ struct SymptomLogView: View {
         }
         .shadow(color: mentalHealthAccent(for: viewModel.mentalHealthScore).opacity(0.22), radius: 16, y: 6)
         .animation(.easeInOut(duration: 0.3), value: viewModel.mentalHealthScore)
+
+        // Divider with label
+        HStack(spacing: 10) {
+            Rectangle().fill(Color("borderColor")).frame(height: 1)
+            Text("A little deeper")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(Color("textTertiary"))
+                .textCase(.uppercase)
+                .tracking(0.8)
+                .fixedSize()
+            Rectangle().fill(Color("borderColor")).frame(height: 1)
+        }
+        .padding(.top, 4)
+
+        // 4 emotional check-in questions
+        EmotionalQuestionCard(
+            question: "How much anger or frustration have you noticed in yourself?",
+            detail: "It's okay to feel angry. This is a safe place to be honest.",
+            icon: "flame.fill",
+            accentColor: Color(hex: "E74C3C"),
+            value: $viewModel.angerScore
+        )
+        .onChange(of: viewModel.angerScore) { viewModel.isSaved = false }
+
+        EmotionalQuestionCard(
+            question: "How worried or anxious have you felt about your recovery or health?",
+            detail: "Anxiety about recovery is very common. You're not alone in this.",
+            icon: "cloud.rain.fill",
+            accentColor: Color(hex: "5B85C4"),
+            value: $viewModel.anxietyScore
+        )
+        .onChange(of: viewModel.anxietyScore) { viewModel.isSaved = false }
+
+        EmotionalQuestionCard(
+            question: "How lonely or isolated have you been feeling?",
+            detail: "Connection matters. Sharing how you feel is a brave first step.",
+            icon: "person.fill.xmark",
+            accentColor: Color(hex: "8E44AD"),
+            value: $viewModel.lonelinessScore
+        )
+        .onChange(of: viewModel.lonelinessScore) { viewModel.isSaved = false }
+
+        EmotionalQuestionCard(
+            question: "How emotionally heavy has the day felt for you?",
+            detail: "Some days carry more weight. Noticing that takes courage.",
+            icon: "scalemass.fill",
+            accentColor: Color(hex: "5D7A8A"),
+            value: $viewModel.heavinessScore
+        )
+        .onChange(of: viewModel.heavinessScore) { viewModel.isSaved = false }
+        } // end outer VStack
     }
 
     func mentalHealthGradient(for score: Int) -> [Color] {

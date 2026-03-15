@@ -10,7 +10,7 @@ enum SymptomCategory: String, CaseIterable, Codable {
     case emotional = "Emotional"
     case skin = "Skin & Hair"
     case other = "Other"
-    
+
     var icon: String {
         switch self {
         case .fatigue: return "battery.25"
@@ -22,7 +22,7 @@ enum SymptomCategory: String, CaseIterable, Codable {
         case .other: return "ellipsis.circle.fill"
         }
     }
-    
+
     var color: String {
         switch self {
         case .fatigue: return "symptomFatigue"
@@ -41,40 +41,40 @@ struct CommonSymptom: Identifiable, Hashable {
     let id = UUID()
     let name: String
     let category: SymptomCategory
-    
+
     static let preloaded: [CommonSymptom] = [
         // Fatigue
         CommonSymptom(name: "Tiredness", category: .fatigue),
         CommonSymptom(name: "Weakness", category: .fatigue),
         CommonSymptom(name: "Shortness of breath", category: .fatigue),
         CommonSymptom(name: "Low energy", category: .fatigue),
-        
+
         // Pain
         CommonSymptom(name: "Headache", category: .pain),
         CommonSymptom(name: "Joint pain", category: .pain),
         CommonSymptom(name: "Muscle aches", category: .pain),
         CommonSymptom(name: "Chest pain", category: .pain),
         CommonSymptom(name: "Back pain", category: .pain),
-        
+
         // Nausea
         CommonSymptom(name: "Nausea", category: .nausea),
         CommonSymptom(name: "Vomiting", category: .nausea),
         CommonSymptom(name: "Loss of appetite", category: .nausea),
         CommonSymptom(name: "Diarrhea", category: .nausea),
         CommonSymptom(name: "Constipation", category: .nausea),
-        
+
         // Cognitive
         CommonSymptom(name: "Brain fog", category: .cognitive),
         CommonSymptom(name: "Memory issues", category: .cognitive),
         CommonSymptom(name: "Difficulty concentrating", category: .cognitive),
         CommonSymptom(name: "Confusion", category: .cognitive),
-        
+
         // Emotional
         CommonSymptom(name: "Anxiety", category: .emotional),
         CommonSymptom(name: "Depression", category: .emotional),
         CommonSymptom(name: "Mood swings", category: .emotional),
         CommonSymptom(name: "Irritability", category: .emotional),
-        
+
         // Skin
         CommonSymptom(name: "Hair loss", category: .skin),
         CommonSymptom(name: "Dry skin", category: .skin),
@@ -89,17 +89,32 @@ class SymptomEntry {
     var id: UUID
     var date: Date
     var symptoms: [LoggedSymptom]
-    var mentalHealthScore: Int
+    var mentalHealthScore: Int   // overall wellbeing
+    var angerScore: Int          // anger / frustration
+    var anxietyScore: Int        // worry / anxiety about recovery
+    var lonelinessScore: Int     // loneliness / isolation
+    var heavinessScore: Int      // emotional heaviness of the day
     var notes: String
-    
-    init(date: Date = Date(), symptoms: [LoggedSymptom] = [], mentalHealthScore: Int = 5, notes: String = "") {
+
+    init(date: Date = Date(),
+         symptoms: [LoggedSymptom] = [],
+         mentalHealthScore: Int = 5,
+         angerScore: Int = 5,
+         anxietyScore: Int = 5,
+         lonelinessScore: Int = 5,
+         heavinessScore: Int = 5,
+         notes: String = "") {
         self.id = UUID()
         self.date = date
         self.symptoms = symptoms
         self.mentalHealthScore = mentalHealthScore
+        self.angerScore = angerScore
+        self.anxietyScore = anxietyScore
+        self.lonelinessScore = lonelinessScore
+        self.heavinessScore = heavinessScore
         self.notes = notes
     }
-    
+
     var dateKey: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -113,11 +128,10 @@ struct LoggedSymptom: Codable, Identifiable, Hashable {
     var name: String
     var category: SymptomCategory
     var severity: Int // 1-10
-    
+
     init(name: String, category: SymptomCategory, severity: Int = 5) {
         self.name = name
         self.category = category
         self.severity = severity
     }
 }
-
