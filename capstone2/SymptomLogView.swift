@@ -274,7 +274,7 @@ struct SymptomLogView: View {
         // Divider with label
         HStack(spacing: 10) {
             Rectangle().fill(Color("borderColor")).frame(height: 1)
-            Text("A little deeper")
+            Text("A little deeper...")
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(Color("textTertiary"))
                 .textCase(.uppercase)
