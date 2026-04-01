@@ -1,21 +1,16 @@
-//
-//  OnboardingView.swift
-//  capstone2
-//
-//  Created by Xiaojing Meng on 3/14/26.
-//
 import SwiftUI
 import SwiftData
 import UserNotifications
 
 // MARK: - Onboarding slide index
 enum OnboardingSlide: Int, CaseIterable {
-    case welcome       = 0
-    case name          = 1
-    case tour          = 2
-    case habits        = 3
-    case notifications = 4
-    case ready         = 5
+    case language      = 0
+    case welcome       = 1
+    case name          = 2
+    case tour          = 3
+    case habits        = 4
+    case notifications = 5
+    case ready         = 6
 }
 
 struct OnboardingView: View {
@@ -45,6 +40,8 @@ struct OnboardingView: View {
 
                 // Slide content
                 TabView(selection: $currentSlide) {
+                    LanguageSlide(onNext: nextSlide)
+                        .tag(OnboardingSlide.language)
                     WelcomeSlide(onNext: nextSlide)
                         .tag(OnboardingSlide.welcome)
                     NameSlide(nameInput: $nameInput, onNext: nextSlide)
@@ -564,5 +561,110 @@ struct ReadySlide: View {
         .padding(14)
         .background(Color.white.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: 13))
+    }
+}
+
+// MARK: - Supported Languages
+struct AppLanguage: Identifiable, Hashable {
+    let id: String          // BCP-47 locale identifier
+    let displayName: String
+    let flag: String
+
+    static let all: [AppLanguage] = [
+        AppLanguage(id: "en",      displayName: "English",    flag: "🇬🇧"),
+        AppLanguage(id: "es",      displayName: "Español",    flag: "🇪🇸"),
+        AppLanguage(id: "fr",      displayName: "Français",   flag: "🇫🇷"),
+        AppLanguage(id: "zh-Hans", displayName: "简体中文",    flag: "🇨🇳"),
+        AppLanguage(id: "pt",      displayName: "Português",  flag: "🇧🇷"),
+    ]
+
+    /// Best match from the device's preferred language list
+    static var systemMatch: AppLanguage {
+        for lang in Locale.preferredLanguages {
+            if lang.hasPrefix("zh") { return all.first { $0.id == "zh-Hans" }! }
+            let code = String(lang.prefix(2))
+            if let match = all.first(where: { $0.id == code }) { return match }
+        }
+        return all[0]
+    }
+}
+
+// MARK: - Language Selection Slide
+struct LanguageSlide: View {
+    let onNext: () -> Void
+    @AppStorage("selectedLanguage") private var selectedLanguage = ""
+    @State private var selected: AppLanguage = AppLanguage.systemMatch
+
+    var body: some View {
+        SlideScaffold(
+            emoji: "🌍",
+            title: "Choose your\nlanguage",
+            subtitle: "Choisissez · Elija · 选择语言 · Escolha",
+            buttonLabel: "Continue",
+            buttonEnabled: true,
+            onButton: {
+                selectedLanguage = selected.id
+                onNext()
+            }
+        ) {
+            VStack(spacing: 10) {
+                ForEach(AppLanguage.all) { language in
+
+                    Button {
+                        withAnimation(.spring(response: 0.25)) { selected = language }
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    } label: {
+                        HStack(spacing: 14) {
+                            Text(language.flag)
+                                .font(.system(size: 28))
+
+                            Text(language.displayName)
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundStyle(selected == language ? Color(hex: "1A7A6E") : .white)
+
+                            Spacer()
+
+                            ZStack {
+                                Circle()
+                                    .fill(selected == language ? Color.white : Color.clear)
+                                    .frame(width: 26, height: 26)
+                                Circle()
+                                    .stroke(Color.white.opacity(selected == language ? 0 : 0.5), lineWidth: 2)
+                                    .frame(width: 26, height: 26)
+                                if selected == language {
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundStyle(Color(hex: "1A7A6E"))
+                                }
+                            }
+                            .animation(.spring(response: 0.25), value: selected)
+                        }
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 14)
+                        .background(
+                            RoundedRectangle(cornerRadius: 14)
+                                .fill(selected == language
+                                      ? Color.white
+                                      : Color.white.opacity(0.1))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14)
+                                .stroke(selected == language
+                                        ? Color.clear
+                                        : Color.white.opacity(0.2), lineWidth: 1)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 28)
+            .onAppear {
+                // Pre-select saved language if returning to onboarding
+                if !selectedLanguage.isEmpty,
+                   let saved = AppLanguage.all.first(where: { $0.id == selectedLanguage }) {
+                    selected = saved
+                }
+            }
+        }
     }
 }

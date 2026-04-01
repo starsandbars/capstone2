@@ -1,3 +1,4 @@
+
 import SwiftUI
 import SwiftData
 
@@ -54,9 +55,6 @@ struct HabitView: View {
         .sheet(isPresented: $viewModel.showingAddHabit) {
             AddHabitSheet(viewModel: viewModel)
         }
-        .sheet(isPresented: $viewModel.showingSuggestions) {
-            SuggestionsSheet(viewModel: viewModel)
-        }
         .sheet(item: $viewModel.showingDetail) { habit in
             HabitDetailSheet(habit: habit, viewModel: viewModel)
         }
@@ -83,17 +81,6 @@ struct HabitView: View {
                     .foregroundStyle(Color("textSecondary"))
             }
             Spacer()
-            // Suggestions button
-            Button {
-                viewModel.showingSuggestions = true
-            } label: {
-                Image(systemName: "lightbulb.fill")
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(Color(hex: "F39C12"))
-                    .frame(width: 42, height: 42)
-                    .background(Color(hex: "F39C12").opacity(0.12))
-                    .clipShape(Circle())
-            }
         }
         .padding(.horizontal, 20)
         .padding(.top, 64)

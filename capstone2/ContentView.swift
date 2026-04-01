@@ -1,22 +1,24 @@
-//
-//  ContentView.swift
-//  capstone2
-//
-//  Created by Xiaojing Meng on 3/8/26.
-//
-
 import SwiftUI
 
 struct ContentView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("selectedLanguage") private var selectedLanguage = ""
+
+    /// The active locale — uses stored preference if set, otherwise system default.
+    var locale: Locale {
+        selectedLanguage.isEmpty ? .current : Locale(identifier: selectedLanguage)
+    }
 
     var body: some View {
-        if hasCompletedOnboarding {
-            MainTabView()
-        } else {
-            OnboardingView()
-                .transition(.opacity)
+        Group {
+            if hasCompletedOnboarding {
+                MainTabView()
+            } else {
+                OnboardingView()
+                    .transition(.opacity)
+            }
         }
+        .environment(\.locale, locale)
     }
 }
 
@@ -26,22 +28,19 @@ struct MainTabView: View {
         TabView {
             HomeView()
                 .tabItem {
-                    Label("Home", systemImage: "house.fill")
+                    Label("tab.home", systemImage: "house.fill")
                 }
 
             SymptomLogView()
                 .tabItem {
-                    Label("Log", systemImage: "note.text")
+                    Label("tab.log", systemImage: "note.text")
                 }
 
             HabitView()
                 .tabItem {
-                    Label("Habits", systemImage: "checkmark.circle.fill")
+                    Label("tab.habits", systemImage: "checkmark.circle.fill")
                 }
         }
         .tint(Color("accentTeal"))
     }
-}
-#Preview {
-    ContentView()
 }

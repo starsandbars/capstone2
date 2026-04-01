@@ -128,6 +128,11 @@ struct AddHabitSheet: View {
     @Bindable var viewModel: HabitViewModel
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Query private var existingHabits: [Habit]
+
+    var alreadyAddedTitles: Set<String> {
+        Set(existingHabits.map(\.title))
+    }
 
 
     var body: some View {
@@ -242,6 +247,22 @@ struct AddHabitSheet: View {
                             .background(Color("chipBackground"))
                             .clipShape(RoundedRectangle(cornerRadius: 13))
                             .animation(.spring(response: 0.3), value: viewModel.newNotifEnabled)
+                        }
+                    }
+
+                    // Suggested habits
+                    sheetSection(title: "Or pick a suggested habit") {
+                        VStack(spacing: 8) {
+                            ForEach(SuggestedHabit.all) { suggestion in
+                                InlineSuggestionRow(
+                                    suggestion: suggestion,
+                                    isAdded: alreadyAddedTitles.contains(suggestion.title)
+                                ) {
+                                    viewModel.addSuggested(suggestion, context: modelContext)
+                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                    dismiss()
+                                }
+                            }
                         }
                     }
 
@@ -528,5 +549,63 @@ struct HabitDetailSheet: View {
         .background(Color("cardBackground"))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(color: .black.opacity(0.04), radius: 5, y: 2)
+    }
+}
+
+// MARK: - Inline Suggestion Row (inside AddHabitSheet)
+struct InlineSuggestionRow: View {
+    let suggestion: SuggestedHabit
+    let isAdded: Bool
+    let onAdd: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Text(suggestion.emoji)
+                .font(.system(size: 20))
+                .frame(width: 38, height: 38)
+                .background(suggestion.category.color.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(suggestion.title)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(isAdded ? Color("textTertiary") : Color("textPrimary"))
+                HStack(spacing: 6) {
+                    Text(suggestion.category.rawValue)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(suggestion.category.color)
+                    Text("·")
+                        .foregroundStyle(Color("textTertiary"))
+                    Text(suggestion.frequency.rawValue)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(Color("textTertiary"))
+                }
+            }
+
+            Spacer()
+
+            if isAdded {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Color("successGreen"))
+                    .frame(width: 32, height: 32)
+                    .background(Color("successGreen").opacity(0.1))
+                    .clipShape(Circle())
+            } else {
+                Button(action: onAdd) {
+                    Image(systemName: "plus")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(Color("accentTeal"))
+                        .frame(width: 32, height: 32)
+                        .background(Color("accentTeal").opacity(0.1))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(12)
+        .background(Color("chipBackground"))
+        .clipShape(RoundedRectangle(cornerRadius: 13))
+        .opacity(isAdded ? 0.6 : 1)
     }
 }
