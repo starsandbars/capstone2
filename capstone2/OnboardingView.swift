@@ -71,6 +71,7 @@ struct OnboardingView: View {
             case .habits:        return [Color(hex: "8E44AD"), Color(hex: "4A235A")]
             case .notifications: return [Color(hex: "CA6F1E"), Color(hex: "784212")]
             case .ready:         return [Color(hex: "1A7A6E"), Color(hex: "0D4F47")]
+
             }
         }()
         return LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
