@@ -580,7 +580,7 @@ struct AppLanguage: Identifiable, Hashable {
         AppLanguage(id: "es",      displayName: "Español",    flag: "🇪🇸"),
         AppLanguage(id: "fr",      displayName: "Français",   flag: "🇫🇷"),
         AppLanguage(id: "zh-Hans", displayName: "简体中文",    flag: "🇨🇳"),
-        AppLanguage(id: "pt",      displayName: "Português",  flag: "🇧🇷"),
+        AppLanguage(id: "pt-BR",      displayName: "Português",  flag: "🇧🇷"),
     ]
 
     /// Best match from the device's preferred language list
