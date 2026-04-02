@@ -1,7 +1,83 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
+    "·" : {
+
+    },
+    "/ %lld" : {
+
+    },
+    "/10" : {
+
+    },
+    "%lld" : {
+
+    },
+    "%lld / 10" : {
+
+    },
+    "%lld day logging streak" : {
+
+    },
+    "%lld entries" : {
+
+    },
+    "%lld weeks ago" : {
+
+    },
+    "%lldx" : {
+
+    },
+    "🌱" : {
+
+    },
+    "🌿" : {
+
+    },
+    "💡" : {
+
+    },
+    "💬" : {
+
+    },
+    "🔥" : {
+
+    },
+    "A little deeper..." : {
+
+    },
+    "Add" : {
+
+    },
+    "Add a Custom Symptom" : {
+
+    },
+    "Add a habit below, or tap 💡 for suggestions." : {
+
+    },
+    "Add Custom" : {
+
+    },
+    "Add New Habit" : {
+
+    },
+    "Add Symptom" : {
+
+    },
+    "Additional Notes" : {
+
+    },
+    "All logged!" : {
+
+    },
+    "Any triggers, observations, or context…" : {
+
+    },
     "app.name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -35,7 +111,11 @@
         }
       }
     },
+    "Browse Symptoms" : {
+
+    },
     "button.add" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -70,6 +150,7 @@
       }
     },
     "button.back" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -104,6 +185,7 @@
       }
     },
     "button.cancel" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -138,6 +220,7 @@
       }
     },
     "button.close" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -172,6 +255,7 @@
       }
     },
     "button.continue" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -206,6 +290,7 @@
       }
     },
     "button.delete" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -240,6 +325,7 @@
       }
     },
     "button.done" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -274,6 +360,7 @@
       }
     },
     "button.edit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -308,6 +395,7 @@
       }
     },
     "button.next" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -342,6 +430,7 @@
       }
     },
     "button.save" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -376,6 +465,7 @@
       }
     },
     "button.skip" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -409,7 +499,11 @@
         }
       }
     },
+    "Cancel" : {
+
+    },
     "category.cognitive" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -444,6 +538,7 @@
       }
     },
     "category.emotional" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -478,6 +573,7 @@
       }
     },
     "category.fatigue" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -512,6 +608,7 @@
       }
     },
     "category.nausea" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -546,6 +643,7 @@
       }
     },
     "category.other" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -580,6 +678,7 @@
       }
     },
     "category.pain" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -614,6 +713,7 @@
       }
     },
     "category.skin" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -647,7 +747,20 @@
         }
       }
     },
+    "Close" : {
+
+    },
+    "Complete a habit and it'll appear here." : {
+
+    },
+    "Copy Yesterday" : {
+
+    },
+    "Curated small steps to rebuild daily life." : {
+
+    },
     "custom.button.add" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -682,6 +795,7 @@
       }
     },
     "custom.category.detail" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -716,6 +830,7 @@
       }
     },
     "custom.category.label" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -750,6 +865,7 @@
       }
     },
     "custom.name.label" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -784,6 +900,7 @@
       }
     },
     "custom.severity.mild" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -818,6 +935,7 @@
       }
     },
     "custom.severity.severe" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -852,6 +970,7 @@
       }
     },
     "custom.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -885,7 +1004,26 @@
         }
       }
     },
+    "Daily Check-in" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Description (optional)" : {
+
+    },
+    "Done" : {
+
+    },
+    "e.g. Jane Smith" : {
+
+    },
+    "e.g. Tingling in fingers" : {
+
+    },
     "emotion.anger" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -920,6 +1058,7 @@
       }
     },
     "emotion.anxiety" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -954,6 +1093,7 @@
       }
     },
     "emotion.heaviness" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -988,6 +1128,7 @@
       }
     },
     "emotion.intensity.elevated" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1022,6 +1163,7 @@
       }
     },
     "emotion.intensity.high" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1056,6 +1198,7 @@
       }
     },
     "emotion.intensity.low" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1090,6 +1233,7 @@
       }
     },
     "emotion.intensity.minimal" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1124,6 +1268,7 @@
       }
     },
     "emotion.intensity.moderate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1158,6 +1303,7 @@
       }
     },
     "emotion.loneliness" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1191,7 +1337,11 @@
         }
       }
     },
+    "Enable reminder" : {
+
+    },
     "eq.anger.detail" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1226,6 +1376,7 @@
       }
     },
     "eq.anger.high" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1260,6 +1411,7 @@
       }
     },
     "eq.anger.question" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1294,6 +1446,7 @@
       }
     },
     "eq.anxiety.detail" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1328,6 +1481,7 @@
       }
     },
     "eq.anxiety.high" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1362,6 +1516,7 @@
       }
     },
     "eq.anxiety.question" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1396,6 +1551,7 @@
       }
     },
     "eq.heaviness.detail" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1430,6 +1586,7 @@
       }
     },
     "eq.heaviness.high" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1464,6 +1621,7 @@
       }
     },
     "eq.heaviness.question" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1498,6 +1656,7 @@
       }
     },
     "eq.loneliness.detail" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1532,6 +1691,7 @@
       }
     },
     "eq.loneliness.high" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1566,6 +1726,7 @@
       }
     },
     "eq.loneliness.question" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1600,6 +1761,7 @@
       }
     },
     "eq.notatall" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1633,7 +1795,26 @@
         }
       }
     },
+    "Export Symptom Report" : {
+
+    },
+    "Feeling great" : {
+
+    },
+    "Generate & Share PDF" : {
+
+    },
+    "Generate a PDF summary to share with your care team." : {
+
+    },
+    "Generating…" : {
+
+    },
+    "Habit name…" : {
+
+    },
     "habitcat.medical" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1668,6 +1849,7 @@
       }
     },
     "habitcat.mindfulness" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1702,6 +1884,7 @@
       }
     },
     "habitcat.movement" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1736,6 +1919,7 @@
       }
     },
     "habitcat.nutrition" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1770,6 +1954,7 @@
       }
     },
     "habitcat.personal" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1804,6 +1989,7 @@
       }
     },
     "habitcat.rest" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1838,6 +2024,7 @@
       }
     },
     "habitcat.social" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1871,7 +2058,11 @@
         }
       }
     },
+    "Habits" : {
+
+    },
     "habits.add" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1906,6 +2097,7 @@
       }
     },
     "habits.empty.nodone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1940,6 +2132,7 @@
       }
     },
     "habits.empty.nohabits" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1974,6 +2167,7 @@
       }
     },
     "habits.filter.all" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2008,6 +2202,7 @@
       }
     },
     "habits.filter.done" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2042,6 +2237,7 @@
       }
     },
     "habits.filter.today" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2076,6 +2272,7 @@
       }
     },
     "habits.form.category" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2110,6 +2307,7 @@
       }
     },
     "habits.form.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2144,6 +2342,7 @@
       }
     },
     "habits.form.howoften" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2178,6 +2377,7 @@
       }
     },
     "habits.form.name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2212,6 +2412,7 @@
       }
     },
     "habits.form.reminder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2246,6 +2447,7 @@
       }
     },
     "habits.form.reminder.at" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2280,6 +2482,7 @@
       }
     },
     "habits.form.reminder.enable" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2314,6 +2517,7 @@
       }
     },
     "habits.form.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2348,6 +2552,7 @@
       }
     },
     "habits.frequency.daily" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2382,6 +2587,7 @@
       }
     },
     "habits.frequency.once" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2416,6 +2622,7 @@
       }
     },
     "habits.frequency.weekly" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2450,6 +2657,7 @@
       }
     },
     "habits.motivation.afternoon" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2484,6 +2692,7 @@
       }
     },
     "habits.motivation.evening" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2518,6 +2727,7 @@
       }
     },
     "habits.motivation.morning" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2552,6 +2762,7 @@
       }
     },
     "habits.motivation.night" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2586,6 +2797,7 @@
       }
     },
     "habits.progress.alldone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2620,6 +2832,7 @@
       }
     },
     "habits.progress.none" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2654,6 +2867,7 @@
       }
     },
     "habits.progress.ready" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2688,6 +2902,7 @@
       }
     },
     "habits.progress.wonderful" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2722,6 +2937,7 @@
       }
     },
     "habits.section.suggestions" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2756,6 +2972,7 @@
       }
     },
     "habits.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2789,7 +3006,14 @@
         }
       }
     },
+    "Hi %@! We're glad you're here 💚" : {
+
+    },
+    "Home" : {
+
+    },
     "home.card.logged" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2824,6 +3048,7 @@
       }
     },
     "home.card.mood" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2858,6 +3083,7 @@
       }
     },
     "home.card.outof10" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2892,6 +3118,7 @@
       }
     },
     "home.card.trend" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2926,6 +3153,7 @@
       }
     },
     "home.concerning.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2960,6 +3188,7 @@
       }
     },
     "home.elevated.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2994,6 +3223,7 @@
       }
     },
     "home.empty.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3028,6 +3258,7 @@
       }
     },
     "home.greeting.afternoon" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3062,6 +3293,7 @@
       }
     },
     "home.greeting.evening" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3096,6 +3328,7 @@
       }
     },
     "home.greeting.morning" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3130,6 +3363,7 @@
       }
     },
     "home.nodata" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3164,6 +3398,7 @@
       }
     },
     "home.nosymptoms" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3198,6 +3433,7 @@
       }
     },
     "home.section.emotional" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3232,6 +3468,7 @@
       }
     },
     "home.section.frequency" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3266,6 +3503,7 @@
       }
     },
     "home.section.mental" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3300,6 +3538,7 @@
       }
     },
     "home.section.reflection" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3334,6 +3573,7 @@
       }
     },
     "home.section.severity" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3368,6 +3608,7 @@
       }
     },
     "home.severity.mild" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3402,6 +3643,7 @@
       }
     },
     "home.severity.moderate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3436,6 +3678,7 @@
       }
     },
     "home.severity.severe" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3470,6 +3713,7 @@
       }
     },
     "home.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3504,6 +3748,7 @@
       }
     },
     "home.trend.improving" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3538,6 +3783,7 @@
       }
     },
     "home.trend.stable" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3572,6 +3818,7 @@
       }
     },
     "home.trend.worsening" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3606,6 +3853,7 @@
       }
     },
     "home.week.last" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3640,6 +3888,7 @@
       }
     },
     "home.week.this" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3674,6 +3923,7 @@
       }
     },
     "home.wellbeing.mixed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3708,6 +3958,7 @@
       }
     },
     "home.wellbeing.strong" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3742,6 +3993,7 @@
       }
     },
     "home.wellbeing.tough" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3775,7 +4027,20 @@
         }
       }
     },
+    "How are you feeling inside today?" : {
+
+    },
+    "Last 7 Days" : {
+
+    },
+    "Last Week" : {
+
+    },
+    "Log" : {
+
+    },
     "log.addCustom" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3810,6 +4075,7 @@
       }
     },
     "log.browseSymptoms" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3844,6 +4110,7 @@
       }
     },
     "log.copyYesterday" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3878,6 +4145,7 @@
       }
     },
     "log.loggedToday" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3912,6 +4180,7 @@
       }
     },
     "log.notes.placeholder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3946,6 +4215,7 @@
       }
     },
     "log.notes.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3980,6 +4250,7 @@
       }
     },
     "log.recentlyLogged" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4014,6 +4285,7 @@
       }
     },
     "log.save" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4048,6 +4320,7 @@
       }
     },
     "log.saved" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4082,6 +4355,7 @@
       }
     },
     "log.saved.banner" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4116,6 +4390,7 @@
       }
     },
     "log.saved.banner.sub" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4150,6 +4425,7 @@
       }
     },
     "log.tab.symptoms" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4184,6 +4460,7 @@
       }
     },
     "log.tab.wellbeing" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4218,6 +4495,7 @@
       }
     },
     "log.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4251,7 +4529,14 @@
         }
       }
     },
+    "Logged Today" : {
+
+    },
+    "Mental Wellbeing" : {
+
+    },
     "mental.deeper" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4286,6 +4571,7 @@
       }
     },
     "mental.feelinggreat" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4320,6 +4606,7 @@
       }
     },
     "mental.label.excellent" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4354,6 +4641,7 @@
       }
     },
     "mental.label.good" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4388,6 +4676,7 @@
       }
     },
     "mental.label.low" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4422,6 +4711,7 @@
       }
     },
     "mental.label.moderate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4456,6 +4746,7 @@
       }
     },
     "mental.label.verylow" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4490,6 +4781,7 @@
       }
     },
     "mental.question.overall" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4524,6 +4816,7 @@
       }
     },
     "mental.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4558,6 +4851,7 @@
       }
     },
     "mental.verydifficult" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4591,7 +4885,35 @@
         }
       }
     },
+    "Mild" : {
+
+    },
+    "New Habit" : {
+
+    },
+    "No data for this week" : {
+
+    },
+    "No data this week" : {
+
+    },
+    "No entries found for the selected date range." : {
+
+    },
+    "No habits here yet" : {
+
+    },
+    "No symptoms logged yet" : {
+
+    },
+    "Not at all" : {
+
+    },
+    "Nothing completed yet" : {
+
+    },
     "notif.habit.body.default" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4626,6 +4948,7 @@
       }
     },
     "notif.symptom.body" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4660,6 +4983,7 @@
       }
     },
     "notif.symptom.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4694,6 +5018,7 @@
       }
     },
     "onboarding.language.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4728,6 +5053,7 @@
       }
     },
     "onboarding.notif.button.allow" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4762,6 +5088,7 @@
       }
     },
     "onboarding.notif.button.enabled" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4796,6 +5123,7 @@
       }
     },
     "onboarding.notif.button.without" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4830,6 +5158,7 @@
       }
     },
     "onboarding.ready.a1" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4864,6 +5193,7 @@
       }
     },
     "onboarding.ready.a2" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4898,6 +5228,7 @@
       }
     },
     "onboarding.ready.a3" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4932,6 +5263,7 @@
       }
     },
     "onboarding.ready.button" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4966,6 +5298,7 @@
       }
     },
     "onboarding.tour.button" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5000,6 +5333,7 @@
       }
     },
     "onboarding.welcome.button" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5034,6 +5368,7 @@
       }
     },
     "onboarding.welcome.f1" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5068,6 +5403,7 @@
       }
     },
     "onboarding.welcome.f2" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5102,6 +5438,7 @@
       }
     },
     "onboarding.welcome.f3" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5136,6 +5473,7 @@
       }
     },
     "onboarding.welcome.f4" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5170,6 +5508,7 @@
       }
     },
     "pdf.emotional.anger" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5204,6 +5543,7 @@
       }
     },
     "pdf.emotional.anxiety" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5238,6 +5578,7 @@
       }
     },
     "pdf.emotional.heaviness" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5272,6 +5613,7 @@
       }
     },
     "pdf.emotional.loneliness" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5306,6 +5648,7 @@
       }
     },
     "pdf.emotional.mood" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5340,6 +5683,7 @@
       }
     },
     "pdf.export.generate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5374,6 +5718,7 @@
       }
     },
     "pdf.export.generating" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5408,6 +5753,7 @@
       }
     },
     "pdf.nosymptoms" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5442,6 +5788,7 @@
       }
     },
     "pdf.range.all" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5476,6 +5823,7 @@
       }
     },
     "pdf.range.month" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5510,6 +5858,7 @@
       }
     },
     "pdf.range.week" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5544,6 +5893,7 @@
       }
     },
     "pdf.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5578,6 +5928,7 @@
       }
     },
     "pdf.trend.improving" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5612,6 +5963,7 @@
       }
     },
     "pdf.trend.stable" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5646,6 +5998,7 @@
       }
     },
     "pdf.trend.worsening" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5679,7 +6032,35 @@
         }
       }
     },
+    "Recently logged" : {
+
+    },
+    "Recovery-friendly habits" : {
+
+    },
+    "Remind me at" : {
+
+    },
+    "Report Preview" : {
+
+    },
+    "Save Today's Log" : {
+
+    },
+    "Saved!" : {
+
+    },
+    "Severe" : {
+
+    },
+    "Start logging your symptoms daily\nto see your weekly summary here." : {
+
+    },
+    "Suggested Habits" : {
+
+    },
     "suggestion.call.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5714,6 +6095,7 @@
       }
     },
     "suggestion.call.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5748,6 +6130,7 @@
       }
     },
     "suggestion.checkin.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5782,6 +6165,7 @@
       }
     },
     "suggestion.checkin.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5816,6 +6200,7 @@
       }
     },
     "suggestion.family.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5850,6 +6235,7 @@
       }
     },
     "suggestion.family.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5884,6 +6270,7 @@
       }
     },
     "suggestion.fruit.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5918,6 +6305,7 @@
       }
     },
     "suggestion.fruit.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5952,6 +6340,7 @@
       }
     },
     "suggestion.gratitude.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5986,6 +6375,7 @@
       }
     },
     "suggestion.gratitude.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6020,6 +6410,7 @@
       }
     },
     "suggestion.journal.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6054,6 +6445,7 @@
       }
     },
     "suggestion.journal.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6088,6 +6480,7 @@
       }
     },
     "suggestion.meal.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6122,6 +6515,7 @@
       }
     },
     "suggestion.meal.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6156,6 +6550,7 @@
       }
     },
     "suggestion.meditate.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6190,6 +6585,7 @@
       }
     },
     "suggestion.meditate.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6224,6 +6620,7 @@
       }
     },
     "suggestion.meds.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6258,6 +6655,7 @@
       }
     },
     "suggestion.meds.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6292,6 +6690,7 @@
       }
     },
     "suggestion.rest.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6326,6 +6725,7 @@
       }
     },
     "suggestion.rest.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6360,6 +6760,7 @@
       }
     },
     "suggestion.sleep.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6394,6 +6795,7 @@
       }
     },
     "suggestion.sleep.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6428,6 +6830,7 @@
       }
     },
     "suggestion.stretch.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6462,6 +6865,7 @@
       }
     },
     "suggestion.stretch.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6496,6 +6900,7 @@
       }
     },
     "suggestion.walk.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6530,6 +6935,7 @@
       }
     },
     "suggestion.walk.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6564,6 +6970,7 @@
       }
     },
     "suggestion.water.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6598,6 +7005,7 @@
       }
     },
     "suggestion.water.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6632,6 +7040,7 @@
       }
     },
     "suggestion.yoga.desc" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6666,6 +7075,7 @@
       }
     },
     "suggestion.yoga.title" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6699,7 +7109,11 @@
         }
       }
     },
+    "Symptom Name" : {
+
+    },
     "tab.habits" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6734,6 +7148,7 @@
       }
     },
     "tab.home" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6768,6 +7183,7 @@
       }
     },
     "tab.log" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6800,6 +7216,42 @@
           }
         }
       }
+    },
+    "This helps organise your symptoms — it does not log the category itself." : {
+
+    },
+    "This Week" : {
+
+    },
+    "Undo" : {
+
+    },
+    "Very difficult" : {
+
+    },
+    "Weekly average:" : {
+
+    },
+    "Weekly Reflection" : {
+
+    },
+    "Which category does this fall under?" : {
+
+    },
+    "You can enable notifications later in Settings → Notifications → SymptomTracker" : {
+
+    },
+    "Your first name…" : {
+
+    },
+    "Your Habits" : {
+
+    },
+    "Your Health\nOverview" : {
+
+    },
+    "Your symptoms have been saved." : {
+
     }
   },
   "version" : "1.0"

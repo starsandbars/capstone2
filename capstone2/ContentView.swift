@@ -28,17 +28,17 @@ struct MainTabView: View {
         TabView {
             HomeView()
                 .tabItem {
-                    Label("tab.home", systemImage: "house.fill")
+                    Label("Home", systemImage: "house.fill")
                 }
 
             SymptomLogView()
                 .tabItem {
-                    Label("tab.log", systemImage: "note.text")
+                    Label("Log", systemImage: "note.text")
                 }
 
             HabitView()
                 .tabItem {
-                    Label("tab.habits", systemImage: "checkmark.circle.fill")
+                    Label("Habits", systemImage: "checkmark.circle.fill")
                 }
         }
         .tint(Color("accentTeal"))

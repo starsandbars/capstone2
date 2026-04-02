@@ -18,7 +18,7 @@ struct OnboardingView: View {
     @AppStorage("patientName") private var storedName = ""
     @Environment(\.modelContext) private var modelContext
 
-    @State private var currentSlide: OnboardingSlide = .welcome
+    @State private var currentSlide: OnboardingSlide = .language
     @State private var nameInput = ""
     @State private var selectedHabits: Set<UUID> = []
     @State private var notificationGranted: Bool? = nil
@@ -26,52 +26,56 @@ struct OnboardingView: View {
     @State private var animateContent = false
 
     var body: some View {
-        ZStack {
-            // Background shifts subtly per slide
-            slideBackground
-                .ignoresSafeArea()
-                .animation(.easeInOut(duration: 0.6), value: currentSlide)
+        GeometryReader { geo in
+            ZStack {
+                // Background shifts per slide
+                slideBackground
+                    .ignoresSafeArea()
+                    .animation(.easeInOut(duration: 0.6), value: currentSlide)
 
-            VStack(spacing: 0) {
-                // Progress dots
-                progressDots
-                    .padding(.top, 60)
-                    .padding(.bottom, 8)
+                VStack(spacing: 0) {
+                    // Progress dots
+                    progressDots
+                        .padding(.top, 60)
+                        .padding(.bottom, 8)
 
-                // Slide content
-                TabView(selection: $currentSlide) {
-                    LanguageSlide(onNext: nextSlide)
-                        .tag(OnboardingSlide.language)
-                    WelcomeSlide(onNext: nextSlide)
-                        .tag(OnboardingSlide.welcome)
-                    NameSlide(nameInput: $nameInput, onNext: nextSlide)
-                        .tag(OnboardingSlide.name)
-                    TourSlide(onNext: nextSlide)
-                        .tag(OnboardingSlide.tour)
-                    HabitsSlide(selectedHabits: $selectedHabits, onNext: nextSlide)
-                        .tag(OnboardingSlide.habits)
-                    NotificationsSlide(granted: $notificationGranted, onNext: nextSlide)
-                        .tag(OnboardingSlide.notifications)
-                    ReadySlide(name: nameInput, onFinish: finish)
-                        .tag(OnboardingSlide.ready)
+                    // Slides — laid out in a horizontal row, shifted by currentSlide index
+                    HStack(spacing: 0) {
+                        LanguageSlide(onNext: nextSlide)
+                            .frame(width: geo.size.width)
+                        WelcomeSlide(onNext: nextSlide)
+                            .frame(width: geo.size.width)
+                        NameSlide(nameInput: $nameInput, onNext: nextSlide)
+                            .frame(width: geo.size.width)
+                        TourSlide(onNext: nextSlide)
+                            .frame(width: geo.size.width)
+                        HabitsSlide(selectedHabits: $selectedHabits, onNext: nextSlide)
+                            .frame(width: geo.size.width)
+                        NotificationsSlide(granted: $notificationGranted, onNext: nextSlide)
+                            .frame(width: geo.size.width)
+                        ReadySlide(name: nameInput, onFinish: finish)
+                            .frame(width: geo.size.width)
+                    }
+                    .frame(width: geo.size.width, alignment: .leading)
+                    .offset(x: -CGFloat(currentSlide.rawValue) * geo.size.width)
+                    .animation(.spring(response: 0.5, dampingFraction: 0.85), value: currentSlide)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.spring(response: 0.5, dampingFraction: 0.82), value: currentSlide)
             }
         }
+        .ignoresSafeArea(.keyboard)
     }
 
     // MARK: - Background gradient per slide
     var slideBackground: some View {
         let colors: [Color] = {
             switch currentSlide {
+            case .language:      return [Color(hex: "0D3A5C"), Color(hex: "1E5F8C")]
             case .welcome:       return [Color(hex: "1A7A6E"), Color(hex: "0D4F47")]
             case .name:          return [Color(hex: "1E5F8C"), Color(hex: "0D3A5C")]
             case .tour:          return [Color(hex: "27AE60"), Color(hex: "145A32")]
             case .habits:        return [Color(hex: "8E44AD"), Color(hex: "4A235A")]
             case .notifications: return [Color(hex: "CA6F1E"), Color(hex: "784212")]
             case .ready:         return [Color(hex: "1A7A6E"), Color(hex: "0D4F47")]
-
             }
         }()
         return LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -610,7 +614,6 @@ struct LanguageSlide: View {
         ) {
             VStack(spacing: 10) {
                 ForEach(AppLanguage.all) { language in
-
                     Button {
                         withAnimation(.spring(response: 0.25)) { selected = language }
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
