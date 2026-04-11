@@ -1,4 +1,3 @@
-
 import SwiftUI
 import SwiftData
 
@@ -72,7 +71,7 @@ struct HabitView: View {
                     .foregroundStyle(Color("accentTeal"))
                     .textCase(.uppercase)
                     .tracking(1.0)
-                Text("Your Habits")
+                Text("habits.title")
                     .font(.custom("Georgia", size: 30))
                     .fontWeight(.semibold)
                     .foregroundStyle(Color("textPrimary"))
@@ -147,17 +146,17 @@ struct HabitView: View {
     }
 
     var progressTitle: String {
-        if totalDue == 0 { return "No habits yet" }
-        if completedToday == totalDue { return "All done! 🎉" }
-        if completedToday == 0 { return "Ready to start?" }
-        return "\(completedToday) of \(totalDue) done"
+        if totalDue == 0 { return NSLocalizedString("habits.progress.none", comment: "") }
+        if completedToday == totalDue { return NSLocalizedString("habits.progress.alldone", comment: "") }
+        if completedToday == 0 { return NSLocalizedString("habits.progress.ready", comment: "") }
+        return String(format: NSLocalizedString("habits.progress.count", comment: ""), completedToday, totalDue)
     }
 
     var progressSubtitle: String {
         let remaining = totalDue - completedToday
-        if completedToday == totalDue && totalDue > 0 { return "Wonderful work today." }
-        if remaining == 1 { return "Just 1 habit left for today." }
-        return "\(remaining) habits still to go."
+        if completedToday == totalDue && totalDue > 0 { return NSLocalizedString("habits.progress.wonderful", comment: "") }
+        if remaining == 1 { return NSLocalizedString("habits.progress.remaining.one", comment: "") }
+        return String(format: NSLocalizedString("habits.progress.remaining", comment: ""), remaining)
     }
 
     // MARK: - Filter bar
@@ -167,7 +166,7 @@ struct HabitView: View {
                 Button {
                     withAnimation(.spring(response: 0.3)) { viewModel.activeFilter = filter }
                 } label: {
-                    Text(filter.rawValue)
+                    Text(filter.localizedTitle)
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(viewModel.activeFilter == filter ? .white : Color("textSecondary"))
                         .padding(.horizontal, 18)
@@ -213,12 +212,12 @@ struct HabitView: View {
             Text("🌱")
                 .font(.system(size: 56))
             VStack(spacing: 8) {
-                Text(viewModel.activeFilter == .done ? "Nothing completed yet" : "No habits here yet")
+                Text(viewModel.activeFilter == .done ? NSLocalizedString("habits.empty.nodone", comment: "") : NSLocalizedString("habits.empty.nohabits", comment: ""))
                     .font(.custom("Georgia", size: 22))
                     .foregroundStyle(Color("textPrimary"))
                 Text(viewModel.activeFilter == .done
-                     ? "Complete a habit and it'll appear here."
-                     : "Add a habit below, or tap 💡 for suggestions.")
+                     ? NSLocalizedString("habits.empty.sub.nodone", comment: "")
+                     : NSLocalizedString("habits.empty.sub.nohabits", comment: ""))
                     .font(.system(size: 14))
                     .foregroundStyle(Color("textSecondary"))
                     .multilineTextAlignment(.center)
@@ -242,7 +241,7 @@ struct HabitView: View {
                 HStack(spacing: 10) {
                     Image(systemName: "plus")
                         .font(.system(size: 17, weight: .bold))
-                    Text("Add New Habit")
+                    Text("habits.add")
                         .font(.system(size: 17, weight: .semibold))
                 }
                 .foregroundStyle(.white)

@@ -1,9 +1,3 @@
-//
-//  PdfDataGenerator.swift
-//  capstone2
-//
-//  Created by Xiaojing Meng on 3/11/26.
-
 import Foundation
 import SwiftUI
 
@@ -21,6 +15,10 @@ struct DailySnapshot {
     let date: Date
     let symptoms: [LoggedSymptom]
     let mentalHealth: Int
+    let anger: Int
+    let anxiety: Int
+    let loneliness: Int
+    let heaviness: Int
     let notes: String
 
     var avgSeverity: Double {
@@ -60,10 +58,10 @@ class PDFDataGenerator {
             if half > 0 {
                 let first = Double(severities.prefix(half).reduce(0, +)) / Double(half)
                 let last  = Double(severities.suffix(half).reduce(0, +)) / Double(half)
-                if last > first + 0.5      { trend = "Worsening" }
-                else if last < first - 0.5 { trend = "Improving" }
-                else                       { trend = "Stable" }
-            } else { trend = "Stable" }
+                if last > first + 0.5      { trend = NSLocalizedString("pdf.trend.worsening", comment: "") }
+                else if last < first - 0.5 { trend = NSLocalizedString("pdf.trend.improving", comment: "") }
+                else                       { trend = NSLocalizedString("pdf.trend.stable",    comment: "") }
+            } else { trend = NSLocalizedString("pdf.trend.stable", comment: "") }
             return SymptomStat(name: name, category: data.0,
                                occurrences: severities.count, avgSeverity: avg,
                                maxSeverity: maxVal, trend: trend)
@@ -72,7 +70,7 @@ class PDFDataGenerator {
     }
 
     var mostConcerningSymptom: SymptomStat? {
-        let worsening = symptomStats.filter { $0.trend == "Worsening" }
+        let worsening = symptomStats.filter { $0.trend == NSLocalizedString("pdf.trend.worsening", comment: "") }
         return (worsening.isEmpty ? symptomStats : worsening).first
     }
 
@@ -81,13 +79,55 @@ class PDFDataGenerator {
         return Double(entries.map(\.mentalHealthScore).reduce(0, +)) / Double(entries.count)
     }
 
+    var avgAnger: Double {
+        guard !entries.isEmpty else { return 0 }
+        return Double(entries.map(\.angerScore).reduce(0, +)) / Double(entries.count)
+    }
+
+    var avgAnxiety: Double {
+        guard !entries.isEmpty else { return 0 }
+        return Double(entries.map(\.anxietyScore).reduce(0, +)) / Double(entries.count)
+    }
+
+    var avgLoneliness: Double {
+        guard !entries.isEmpty else { return 0 }
+        return Double(entries.map(\.lonelinessScore).reduce(0, +)) / Double(entries.count)
+    }
+
+    var avgHeaviness: Double {
+        guard !entries.isEmpty else { return 0 }
+        return Double(entries.map(\.heavinessScore).reduce(0, +)) / Double(entries.count)
+    }
+
+    /// All four emotional dimensions as a sorted array for PDF rendering
+    var emotionalScores: [(label: String, score: Double)] {
+        [
+            (NSLocalizedString("pdf.emotional.anger", comment: ""), avgAnger),
+            (NSLocalizedString("pdf.emotional.anxiety", comment: ""), avgAnxiety),
+            (NSLocalizedString("pdf.emotional.loneliness", comment: ""), avgLoneliness),
+            (NSLocalizedString("pdf.emotional.heaviness", comment: ""), avgHeaviness),
+        ]
+    }
+
+    var mostElevatedEmotion: (label: String, score: Double)? {
+        emotionalScores.filter { $0.score >= 4 }.max(by: { $0.score < $1.score })
+    }
+
     var uniqueSymptomCount: Int {
         Set(entries.flatMap(\.symptoms).map(\.name)).count
     }
 
     var dailySnapshots: [DailySnapshot] {
-        entries.map { DailySnapshot(date: $0.date, symptoms: $0.symptoms,
-                                    mentalHealth: $0.mentalHealthScore, notes: $0.notes) }
+        entries.map { DailySnapshot(
+            date: $0.date,
+            symptoms: $0.symptoms,
+            mentalHealth: $0.mentalHealthScore,
+            anger: $0.angerScore,
+            anxiety: $0.anxietyScore,
+            loneliness: $0.lonelinessScore,
+            heaviness: $0.heavinessScore,
+            notes: $0.notes
+        )}
     }
 
     var dateRangeLabel: String {
@@ -112,9 +152,12 @@ class PDFDataGenerator {
             parts.append("The most notable symptom was \(top.name) (average severity \(String(format: "%.1f", top.avgSeverity))/10, \(top.trend.lowercased())).")
         }
         let avg = avgMentalHealth
-        if avg >= 7 { parts.append("Mental wellbeing has been strong during this period.") }
-        else if avg >= 4 { parts.append("Mental wellbeing has been moderate, with some difficult days.") }
-        else { parts.append("Mental wellbeing has been challenging. Consider discussing emotional support with your care team.") }
+        if avg >= 7 { parts.append(NSLocalizedString("pdf.overall.mood.strong", comment: "")) }
+        else if avg >= 4 { parts.append(NSLocalizedString("pdf.overall.mood.moderate", comment: "")) }
+        else { parts.append(NSLocalizedString("pdf.overall.mood.challenging", comment: "")) }
+        if let elevated = mostElevatedEmotion {
+            parts.append("The most elevated emotional dimension was \(elevated.label) (avg \(String(format: "%.1f", elevated.score))/10) — this may be worth discussing with a clinician.")
+        }
         return parts.joined(separator: " ")
     }
 }

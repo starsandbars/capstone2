@@ -68,7 +68,7 @@ struct HabitRow: View {
                         HStack(spacing: 4) {
                             Image(systemName: habit.category.icon)
                                 .font(.system(size: 9, weight: .semibold))
-                            Text(habit.category.rawValue)
+                            Text(habit.category.localizedTitle)
                                 .font(.system(size: 11, weight: .medium))
                         }
                         .foregroundStyle(habit.category.color)
@@ -77,7 +77,7 @@ struct HabitRow: View {
                         HStack(spacing: 4) {
                             Image(systemName: habit.frequency.icon)
                                 .font(.system(size: 9, weight: .semibold))
-                            Text(habit.frequency.rawValue)
+                            Text(habit.frequency.localizedTitle)
                                 .font(.system(size: 11, weight: .medium))
                         }
                         .foregroundStyle(Color("textTertiary"))
@@ -110,12 +110,12 @@ struct HabitRow: View {
         .shadow(color: .black.opacity(0.04), radius: 5, y: 2)
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             Button(role: .destructive, action: onDelete) {
-                Label("Delete", systemImage: "trash")
+                Label("button.delete", systemImage: "trash")
             }
         }
         .swipeActions(edge: .leading) {
             Button(action: onToggle) {
-                Label(habit.isCompletedForPeriod ? "Undo" : "Done",
+                Label(habit.isCompletedForPeriod ? NSLocalizedString("button.back", comment: "") : NSLocalizedString("habits.filter.done", comment: ""),
                       systemImage: habit.isCompletedForPeriod ? "arrow.uturn.backward" : "checkmark")
             }
             .tint(Color("accentTeal"))
@@ -142,13 +142,13 @@ struct AddHabitSheet: View {
 
                     // Title + description
                     VStack(spacing: 12) {
-                        TextField("Habit name…", text: $viewModel.newTitle)
+                        TextField(NSLocalizedString("habits.form.name", comment: ""), text: $viewModel.newTitle)
                             .font(.system(size: 17, weight: .semibold))
                             .padding(16)
                             .background(Color("chipBackground"))
                             .clipShape(RoundedRectangle(cornerRadius: 13))
 
-                        TextField("Description (optional)", text: $viewModel.newDescription)
+                        TextField(NSLocalizedString("habits.form.desc", comment: ""), text: $viewModel.newDescription)
                             .font(.system(size: 15))
                             .padding(16)
                             .background(Color("chipBackground"))
@@ -156,7 +156,7 @@ struct AddHabitSheet: View {
                     }
 
                     // Frequency
-                    sheetSection(title: "How often?") {
+                    sheetSection(title: NSLocalizedString("habits.form.howoften", comment: "")) {
                         HStack(spacing: 10) {
                             ForEach(HabitFrequency.allCases, id: \.self) { freq in
                                 Button {
@@ -165,7 +165,7 @@ struct AddHabitSheet: View {
                                     VStack(spacing: 6) {
                                         Image(systemName: freq.icon)
                                             .font(.system(size: 16, weight: .semibold))
-                                        Text(freq.rawValue)
+                                        Text(freq.localizedTitle)
                                             .font(.system(size: 13, weight: .semibold))
                                     }
                                     .foregroundStyle(viewModel.newFrequency == freq ? .white : Color("textSecondary"))
@@ -180,7 +180,7 @@ struct AddHabitSheet: View {
                     }
 
                     // Category
-                    sheetSection(title: "Category") {
+                    sheetSection(title: NSLocalizedString("habits.form.category", comment: "")) {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                             ForEach(HabitCategory.allCases, id: \.self) { cat in
                                 Button {
@@ -190,7 +190,7 @@ struct AddHabitSheet: View {
                                         Image(systemName: cat.icon)
                                             .font(.system(size: 13, weight: .semibold))
                                             .foregroundStyle(viewModel.newCategory == cat ? .white : cat.color)
-                                        Text(cat.rawValue)
+                                        Text(cat.localizedTitle)
                                             .font(.system(size: 13, weight: .semibold))
                                             .foregroundStyle(viewModel.newCategory == cat ? .white : Color("textPrimary"))
                                         Spacer()
@@ -210,16 +210,16 @@ struct AddHabitSheet: View {
 
                     // Notification time
                     if viewModel.newFrequency != .once {
-                        sheetSection(title: "Daily reminder") {
+                        sheetSection(title: NSLocalizedString("habits.form.reminder", comment: "")) {
                             VStack(spacing: 12) {
-                                Toggle("Enable reminder", isOn: $viewModel.newNotifEnabled)
+                                Toggle(NSLocalizedString("habits.form.reminder.enable", comment: ""), isOn: $viewModel.newNotifEnabled)
                                     .font(.system(size: 15, weight: .medium))
                                     .foregroundStyle(Color("textPrimary"))
                                     .tint(Color("accentTeal"))
 
                                 if viewModel.newNotifEnabled {
                                     HStack {
-                                        Text("Remind me at")
+                                        Text("habits.form.reminder.at")
                                             .font(.system(size: 14))
                                             .foregroundStyle(Color("textSecondary"))
                                         Spacer()
@@ -251,7 +251,7 @@ struct AddHabitSheet: View {
                     }
 
                     // Suggested habits
-                    sheetSection(title: "Or pick a suggested habit") {
+                    sheetSection(title: NSLocalizedString("habits.section.suggestions", comment: "")) {
                         VStack(spacing: 8) {
                             ForEach(SuggestedHabit.all) { suggestion in
                                 InlineSuggestionRow(
@@ -271,18 +271,18 @@ struct AddHabitSheet: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 8)
             }
-            .navigationTitle("New Habit")
+            .navigationTitle(NSLocalizedString("habits.form.title", comment: ""))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(NSLocalizedString("button.cancel", comment: "")) {
                         viewModel.resetForm()
                         dismiss()
                     }
                     .foregroundStyle(Color("textSecondary"))
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
+                    Button(NSLocalizedString("button.add", comment: "")) {
                         viewModel.saveHabit(context: modelContext)
                         dismiss()
                     }
@@ -349,7 +349,7 @@ struct SuggestionsSheet: View {
                                 Image(systemName: category.icon)
                                     .font(.system(size: 12, weight: .bold))
                                     .foregroundStyle(category.color)
-                                Text(category.rawValue)
+                                Text(category.localizedTitle)
                                     .font(.system(size: 13, weight: .bold))
                                     .foregroundStyle(category.color)
                                     .textCase(.uppercase)
@@ -372,11 +372,11 @@ struct SuggestionsSheet: View {
                 .padding(.top, 12)
                 .padding(.bottom, 40)
             }
-            .navigationTitle("Suggested Habits")
+            .navigationTitle(NSLocalizedString("habits.section.suggestions", comment: ""))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                    Button(NSLocalizedString("button.done", comment: "")) { dismiss() }
                         .foregroundStyle(Color("accentTeal"))
                         .fontWeight(.semibold)
                 }
@@ -457,14 +457,14 @@ struct HabitDetailSheet: View {
 
                         // Category + frequency
                         HStack(spacing: 10) {
-                            Label(habit.category.rawValue, systemImage: habit.category.icon)
+                            Label(habit.category.localizedTitle, systemImage: habit.category.icon)
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(habit.category.color)
                                 .padding(.horizontal, 12).padding(.vertical, 6)
                                 .background(habit.category.color.opacity(0.1))
                                 .clipShape(Capsule())
 
-                            Label(habit.frequency.rawValue, systemImage: habit.frequency.icon)
+                            Label(habit.frequency.localizedTitle, systemImage: habit.frequency.icon)
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(Color("textSecondary"))
                                 .padding(.horizontal, 12).padding(.vertical, 6)
@@ -515,7 +515,7 @@ struct HabitDetailSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }
+                    Button(NSLocalizedString("button.close", comment: "")) { dismiss() }
                         .foregroundStyle(Color("textSecondary"))
                 }
                 ToolbarItem(placement: .destructiveAction) {
@@ -571,12 +571,12 @@ struct InlineSuggestionRow: View {
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(isAdded ? Color("textTertiary") : Color("textPrimary"))
                 HStack(spacing: 6) {
-                    Text(suggestion.category.rawValue)
+                    Text(suggestion.category.localizedTitle)
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(suggestion.category.color)
                     Text("·")
                         .foregroundStyle(Color("textTertiary"))
-                    Text(suggestion.frequency.rawValue)
+                    Text(suggestion.frequency.localizedTitle)
                         .font(.system(size: 11, weight: .medium))
                         .foregroundStyle(Color("textTertiary"))
                 }

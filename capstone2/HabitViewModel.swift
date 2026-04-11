@@ -26,6 +26,14 @@ class HabitViewModel {
         case today = "Today"
         case all   = "All"
         case done  = "Done"
+
+        var localizedTitle: String {
+            switch self {
+            case .today: return NSLocalizedString("habits.filter.today", comment: "")
+            case .all:   return NSLocalizedString("habits.filter.all",   comment: "")
+            case .done:  return NSLocalizedString("habits.filter.done",  comment: "")
+            }
+        }
     }
     var activeFilter: Filter = .today
 
@@ -114,7 +122,7 @@ class HabitViewModel {
         let content = UNMutableNotificationContent()
         content.title = "\(habit.emoji) \(habit.title)"
         content.body  = habit.habitDescription.isEmpty
-            ? "Don't forget your habit today!"
+            ? NSLocalizedString("notif.habit.body.default", comment: "")
             : habit.habitDescription
         content.sound = .default
 
@@ -135,10 +143,10 @@ class HabitViewModel {
     var motivationalMessage: String {
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
-        case 5..<12:  return "Start the morning gently 🌅"
-        case 12..<17: return "You're doing great today 💪"
-        case 17..<21: return "Wind down with intention 🌿"
-        default:      return "Rest well, you deserve it 🌙"
+        case 5..<12:  return NSLocalizedString("habits.motivation.morning",   comment: "")
+        case 12..<17: return NSLocalizedString("habits.motivation.afternoon", comment: "")
+        case 17..<21: return NSLocalizedString("habits.motivation.evening",   comment: "")
+        default:      return NSLocalizedString("habits.motivation.night",     comment: "")
         }
     }
 

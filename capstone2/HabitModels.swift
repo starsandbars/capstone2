@@ -15,6 +15,14 @@ enum HabitFrequency: String, Codable, CaseIterable {
         case .once:   return "checkmark.seal"
         }
     }
+
+    var localizedTitle: String {
+        switch self {
+        case .daily:  return NSLocalizedString("habits.frequency.daily",  comment: "")
+        case .weekly: return NSLocalizedString("habits.frequency.weekly", comment: "")
+        case .once:   return NSLocalizedString("habits.frequency.once",   comment: "")
+        }
+    }
 }
 
 // MARK: - Habit Category
@@ -48,6 +56,18 @@ enum HabitCategory: String, Codable, CaseIterable {
         case .rest:        return Color(hex: "2471A3")
         case .medical:     return Color(hex: "E74C3C")
         case .personal:    return Color(hex: "F39C12")
+        }
+    }
+
+    var localizedTitle: String {
+        switch self {
+        case .movement:    return NSLocalizedString("habitcat.movement",    comment: "")
+        case .nutrition:   return NSLocalizedString("habitcat.nutrition",   comment: "")
+        case .mindfulness: return NSLocalizedString("habitcat.mindfulness", comment: "")
+        case .social:      return NSLocalizedString("habitcat.social",      comment: "")
+        case .rest:        return NSLocalizedString("habitcat.rest",        comment: "")
+        case .medical:     return NSLocalizedString("habitcat.medical",     comment: "")
+        case .personal:    return NSLocalizedString("habitcat.personal",    comment: "")
         }
     }
 }
@@ -189,20 +209,20 @@ struct SuggestedHabit: Identifiable {
     let emoji: String
 
     static let all: [SuggestedHabit] = [
-        SuggestedHabit(title: "Go for a walk",          description: "Even 10 minutes outside makes a difference",     category: .movement,    frequency: .daily,  emoji: "🚶"),
-        SuggestedHabit(title: "Gentle stretching",      description: "5 minutes of light stretching to ease stiffness", category: .movement,    frequency: .daily,  emoji: "🧘"),
-        SuggestedHabit(title: "Chair yoga",             description: "Low-impact movement for any energy level",        category: .movement,    frequency: .daily,  emoji: "🪑"),
-        SuggestedHabit(title: "Drink 8 glasses water",  description: "Stay hydrated throughout the day",                category: .nutrition,   frequency: .daily,  emoji: "💧"),
-        SuggestedHabit(title: "Make a healthy meal",    description: "Cook one nourishing meal from scratch",           category: .nutrition,   frequency: .daily,  emoji: "🥗"),
-        SuggestedHabit(title: "Eat a piece of fruit",   description: "A simple step toward better nutrition",           category: .nutrition,   frequency: .daily,  emoji: "🍎"),
-        SuggestedHabit(title: "5-min meditation",       description: "Breathe deeply and be present",                   category: .mindfulness, frequency: .daily,  emoji: "🌿"),
-        SuggestedHabit(title: "Write in a journal",     description: "Reflect on today, however it went",               category: .mindfulness, frequency: .daily,  emoji: "📓"),
-        SuggestedHabit(title: "Gratitude moment",       description: "Name 3 things you're grateful for today",         category: .mindfulness, frequency: .daily,  emoji: "🙏"),
-        SuggestedHabit(title: "Call a loved one",       description: "Connection is powerful medicine",                 category: .social,      frequency: .daily,  emoji: "📞"),
-        SuggestedHabit(title: "Time with family",       description: "Quality time with people who care for you",       category: .social,      frequency: .weekly, emoji: "🏠"),
-        SuggestedHabit(title: "Sleep by 10pm",          description: "Rest is a crucial part of recovery",              category: .rest,        frequency: .daily,  emoji: "🌙"),
-        SuggestedHabit(title: "Afternoon rest",         description: "A short rest can restore your energy",            category: .rest,        frequency: .daily,  emoji: "😴"),
-        SuggestedHabit(title: "Take medications",       description: "Consistency with medication matters",             category: .medical,     frequency: .daily,  emoji: "💊"),
-        SuggestedHabit(title: "Check in with your body",description: "Notice how you're feeling today",                 category: .medical,     frequency: .daily,  emoji: "🔍"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.walk.title",     comment: ""), description: NSLocalizedString("suggestion.walk.desc",     comment: ""), category: .movement,    frequency: .daily,  emoji: "🚶"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.stretch.title",  comment: ""), description: NSLocalizedString("suggestion.stretch.desc",  comment: ""), category: .movement,    frequency: .daily,  emoji: "🧘"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.yoga.title",     comment: ""), description: NSLocalizedString("suggestion.yoga.desc",     comment: ""), category: .movement,    frequency: .daily,  emoji: "🪑"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.water.title",    comment: ""), description: NSLocalizedString("suggestion.water.desc",    comment: ""), category: .nutrition,   frequency: .daily,  emoji: "💧"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.meal.title",     comment: ""), description: NSLocalizedString("suggestion.meal.desc",     comment: ""), category: .nutrition,   frequency: .daily,  emoji: "🥗"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.fruit.title",    comment: ""), description: NSLocalizedString("suggestion.fruit.desc",    comment: ""), category: .nutrition,   frequency: .daily,  emoji: "🍎"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.meditate.title", comment: ""), description: NSLocalizedString("suggestion.meditate.desc", comment: ""), category: .mindfulness, frequency: .daily,  emoji: "🌿"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.journal.title",  comment: ""), description: NSLocalizedString("suggestion.journal.desc",  comment: ""), category: .mindfulness, frequency: .daily,  emoji: "📓"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.gratitude.title",comment: ""), description: NSLocalizedString("suggestion.gratitude.desc",comment: ""), category: .mindfulness, frequency: .daily,  emoji: "🙏"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.call.title",     comment: ""), description: NSLocalizedString("suggestion.call.desc",     comment: ""), category: .social,      frequency: .daily,  emoji: "📞"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.family.title",   comment: ""), description: NSLocalizedString("suggestion.family.desc",   comment: ""), category: .social,      frequency: .weekly, emoji: "🏠"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.sleep.title",    comment: ""), description: NSLocalizedString("suggestion.sleep.desc",    comment: ""), category: .rest,        frequency: .daily,  emoji: "🌙"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.rest.title",     comment: ""), description: NSLocalizedString("suggestion.rest.desc",     comment: ""), category: .rest,        frequency: .daily,  emoji: "😴"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.meds.title",     comment: ""), description: NSLocalizedString("suggestion.meds.desc",     comment: ""), category: .medical,     frequency: .daily,  emoji: "💊"),
+        SuggestedHabit(title: NSLocalizedString("suggestion.checkin.title",  comment: ""), description: NSLocalizedString("suggestion.checkin.desc",  comment: ""), category: .medical,     frequency: .daily,  emoji: "🔍"),
     ]
 }

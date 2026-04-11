@@ -204,7 +204,7 @@ struct FrequencyRow: View {
                 Text(name)
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(Color("textPrimary"))
-                Text(category.rawValue)
+                Text(category.localizedTitle)
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(Color(category.color))
             }
@@ -357,5 +357,153 @@ struct MoodBubble: View {
                 .foregroundStyle(Color("textTertiary"))
         }
         .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - Emotional Score Row (home summary)
+struct EmotionalScoreRow: View {
+    let label: String
+    let icon: String
+    let colorHex: String
+    let score: Double
+    @State private var animate = false
+
+    var color: Color { Color(hex: colorHex) }
+
+    var levelLabel: String {
+        switch score {
+        case 0..<3:  return NSLocalizedString("emotion.intensity.low", comment: "")
+        case 3..<5:  return "Mild"
+        case 5..<7:  return NSLocalizedString("emotion.intensity.moderate", comment: "")
+        case 7..<9:  return NSLocalizedString("emotion.intensity.high", comment: "")
+        default:     return "Very high"
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(color)
+                .frame(width: 32, height: 32)
+                .background(color.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text(label)
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Color("textPrimary"))
+                    Spacer()
+                    Text(String(format: "%.1f", score))
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(color)
+                    Text("/ 10")
+                        .font(.system(size: 11))
+                        .foregroundStyle(Color("textTertiary"))
+                }
+
+                // Fill bar
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(Color("sliderTrack"))
+                            .frame(height: 5)
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(color)
+                            .frame(width: animate ? geo.size.width * CGFloat(score / 10.0) : 0, height: 5)
+                            .animation(.spring(response: 0.55, dampingFraction: 0.75).delay(0.1), value: animate)
+                    }
+                }
+                .frame(height: 5)
+            }
+
+            // Level pill
+            Text(levelLabel)
+                .font(.system(size: 10, weight: .bold))
+                .foregroundStyle(color)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(color.opacity(0.1))
+                .clipShape(Capsule())
+        }
+        .onAppear { animate = true }
+        .onChange(of: score) { animate = false; DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { animate = true } }
+    }
+}
+
+// MARK: - Emotional Summary Row (for home weekly breakdown)
+struct EmotionalSummaryRow: View {
+    let icon: String
+    let label: String
+    let score: Double      // 0–10 average
+    let color: Color
+    @State private var animateBar = false
+
+    var intensityLabel: String {
+        switch score {
+        case 0..<2:  return NSLocalizedString("emotion.intensity.minimal", comment: "")
+        case 2..<4:  return "Low"
+        case 4..<6:  return "Moderate"
+        case 6..<8:  return NSLocalizedString("emotion.intensity.elevated", comment: "")
+        default:     return "High"
+        }
+    }
+
+    var body: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: 10) {
+                Image(systemName: icon)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(color)
+                    .frame(width: 28, height: 28)
+                    .background(color.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 7))
+
+                Text(label)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Color("textPrimary"))
+
+                Spacer()
+
+                HStack(spacing: 4) {
+                    Text(String(format: "%.1f", score))
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(color)
+                    Text("/10")
+                        .font(.system(size: 11))
+                        .foregroundStyle(Color("textTertiary"))
+                    Text("·")
+                        .foregroundStyle(Color("textTertiary"))
+                    Text(intensityLabel)
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(color)
+                }
+            }
+
+            // Animated fill bar
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color("sliderTrack"))
+                        .frame(height: 6)
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(
+                            LinearGradient(
+                                colors: [color.opacity(0.6), color],
+                                startPoint: .leading, endPoint: .trailing
+                            )
+                        )
+                        .frame(width: animateBar ? geo.size.width * CGFloat(score / 10.0) : 0, height: 6)
+                        .animation(.spring(response: 0.55, dampingFraction: 0.75).delay(0.1), value: animateBar)
+                }
+            }
+            .frame(height: 6)
+        }
+        .onAppear { animateBar = true }
+        .onChange(of: score) {
+            animateBar = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { animateBar = true }
+        }
     }
 }

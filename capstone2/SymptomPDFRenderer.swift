@@ -1,10 +1,3 @@
-//
-//  SymptomPDFRenderer.swift
-//  capstone2
-//
-//  Created by Xiaojing Meng on 3/11/26.
-//
-
 import UIKit
 import SwiftUI
 
@@ -51,6 +44,7 @@ class SymptomPDFRenderer {
                 self.drawSummaryBox()
                 self.drawKeyMetrics()
                 self.drawSymptomTable()
+                self.drawEmotionalScores()
                 self.drawDailyLog()
                 self.drawFooter()
             }
@@ -111,14 +105,14 @@ class SymptomPDFRenderer {
             .foregroundColor: UIColor.white.withAlphaComponent(0.75),
             .kern: 1.5
         ]
-        ("SYMPTOM TRACKER" as NSString).draw(at: CGPoint(x: margin, y: 22), withAttributes: appAttrs)
+        (NSLocalizedString("pdf.app", comment: "") as NSString).draw(at: CGPoint(x: margin, y: 22), withAttributes: appAttrs)
 
         // Report title
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont(name: "Georgia-Bold", size: 26) ?? UIFont.boldSystemFont(ofSize: 26),
             .foregroundColor: UIColor.white
         ]
-        ("Symptom Report" as NSString).draw(at: CGPoint(x: margin, y: 44), withAttributes: titleAttrs)
+        (NSLocalizedString("pdf.title", comment: "") as NSString).draw(at: CGPoint(x: margin, y: 44), withAttributes: titleAttrs)
 
         // Date range
         let subAttrs: [NSAttributedString.Key: Any] = [
@@ -183,7 +177,7 @@ class SymptomPDFRenderer {
             .foregroundColor: teal,
             .kern: 1.0
         ]
-        ("CLINICAL SUMMARY" as NSString).draw(at: CGPoint(x: margin + 16, y: currentY + 14),
+        (NSLocalizedString("pdf.section.summary", comment: "") as NSString).draw(at: CGPoint(x: margin + 16, y: currentY + 14),
                                                withAttributes: labelAttrs)
 
         // Summary text
@@ -198,14 +192,14 @@ class SymptomPDFRenderer {
     func drawKeyMetrics() {
         checkPageBreak(needing: 90)
 
-        let sectionTitle = "AT A GLANCE"
+        let sectionTitle = NSLocalizedString("pdf.section.glance", comment: "")
         drawSectionTitle(sectionTitle)
 
         let metrics: [(String, String, UIColor)] = [
-            ("Days Logged",    "\(gen.entries.count)",                      teal),
-            ("Symptoms Found", "\(gen.uniqueSymptomCount)",                 teal),
-            ("Avg Mood",       String(format: "%.1f/10", gen.avgMentalHealth), moodColor(gen.avgMentalHealth)),
-            ("Most Severe",    gen.topSymptoms.first.map { String(format: "%.1f", $0.avgSeverity) } ?? "N/A",
+            (NSLocalizedString("pdf.metric.dayslogged", comment: ""),    "\(gen.entries.count)",                      teal),
+            (NSLocalizedString("pdf.metric.symptoms", comment: ""), "\(gen.uniqueSymptomCount)",                 teal),
+            (NSLocalizedString("pdf.metric.mood", comment: ""),       String(format: "%.1f/10", gen.avgMentalHealth), moodColor(gen.avgMentalHealth)),
+            (NSLocalizedString("pdf.metric.severe", comment: ""),    gen.topSymptoms.first.map { String(format: "%.1f", $0.avgSeverity) } ?? "N/A",
                                severityColor(gen.topSymptoms.first?.avgSeverity ?? 0))
         ]
 
@@ -244,16 +238,16 @@ class SymptomPDFRenderer {
     func drawSymptomTable() {
         guard !gen.topSymptoms.isEmpty else { return }
         checkPageBreak(needing: 120)
-        drawSectionTitle("SYMPTOM SUMMARY")
+        drawSectionTitle(NSLocalizedString("pdf.section.symptoms", comment: ""))
 
         // Table header
         let cols: [(String, CGFloat)] = [
-            ("Symptom",   0.32),
-            ("Category",  0.20),
-            ("Times",     0.10),
-            ("Avg Sev",   0.13),
-            ("Max Sev",   0.13),
-            ("Trend",     0.12)
+            (NSLocalizedString("pdf.col.symptom", comment: ""),   0.32),
+            (NSLocalizedString("pdf.col.category", comment: ""),  0.20),
+            (NSLocalizedString("pdf.col.times", comment: ""),     0.10),
+            (NSLocalizedString("pdf.col.avgsev", comment: ""),   0.13),
+            (NSLocalizedString("pdf.col.maxsev", comment: ""),   0.13),
+            (NSLocalizedString("pdf.col.trend", comment: ""),     0.12)
         ]
 
         let headerH: CGFloat = 26
@@ -338,11 +332,105 @@ class SymptomPDFRenderer {
         currentY += 20
     }
 
+
+    // MARK: - Emotional Scores Section
+    func drawEmotionalScores() {
+        guard !gen.entries.isEmpty else { return }
+        checkPageBreak(needing: 160)
+        drawSectionTitle(NSLocalizedString("pdf.section.emotional", comment: ""))
+
+        // Overall mood score row
+        let moodRow: [(String, Double, UIColor)] = [
+            (NSLocalizedString("pdf.emotional.mood",      comment: ""),       gen.avgMentalHealth, moodColor(gen.avgMentalHealth)),
+            (NSLocalizedString("pdf.emotional.anger",      comment: ""),gen.avgAnger,        UIColor(red: 0.906, green: 0.298, blue: 0.235, alpha: 1)),
+            (NSLocalizedString("pdf.emotional.anxiety",    comment: ""),    gen.avgAnxiety,      UIColor(red: 0.357, green: 0.522, blue: 0.769, alpha: 1)),
+            (NSLocalizedString("pdf.emotional.loneliness", comment: ""),         gen.avgLoneliness,   UIColor(red: 0.557, green: 0.267, blue: 0.678, alpha: 1)),
+            (NSLocalizedString("pdf.emotional.heaviness",  comment: ""),gen.avgHeaviness,    UIColor(red: 0.365, green: 0.475, blue: 0.541, alpha: 1)),
+        ]
+
+        let rowH: CGFloat = 30
+        let barMaxW: CGFloat = contentWidth * 0.45
+        let labelW:  CGFloat = contentWidth * 0.38
+        let valW:    CGFloat = contentWidth * 0.10
+
+        for (idx, item) in moodRow.enumerated() {
+            checkPageBreak(needing: rowH + 4)
+
+            let rowRect = CGRect(x: margin, y: currentY, width: contentWidth, height: rowH)
+            (idx % 2 == 0 ? UIColor.white : lightGray).setFill()
+            UIBezierPath(roundedRect: rowRect, cornerRadius: 0).fill()
+
+            // Label
+            let lblAttrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 11, weight: idx == 0 ? .bold : .regular),
+                .foregroundColor: darkText
+            ]
+            (item.0 as NSString).draw(
+                in: CGRect(x: margin + 6, y: currentY + 8, width: labelW, height: 16),
+                withAttributes: lblAttrs)
+
+            // Score value
+            let valAttrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.boldSystemFont(ofSize: 11),
+                .foregroundColor: item.2
+            ]
+            let valStr = String(format: "%.1f/10", item.1)
+            (valStr as NSString).draw(
+                at: CGPoint(x: margin + labelW + 4, y: currentY + 8),
+                withAttributes: valAttrs)
+
+            // Fill bar
+            let barX = margin + labelW + valW + 10
+            let barH: CGFloat = 6
+            let barY = currentY + (rowH - barH) / 2
+
+            border.setFill()
+            UIBezierPath(roundedRect: CGRect(x: barX, y: barY, width: barMaxW, height: barH),
+                         cornerRadius: 3).fill()
+
+            let fillW = barMaxW * CGFloat(item.1 / 10.0)
+            item.2.setFill()
+            UIBezierPath(roundedRect: CGRect(x: barX, y: barY, width: fillW, height: barH),
+                         cornerRadius: 3).fill()
+
+            currentY += rowH
+        }
+
+        // Bottom border
+        border.setStroke()
+        let line = UIBezierPath()
+        line.move(to: CGPoint(x: margin, y: currentY))
+        line.addLine(to: CGPoint(x: margin + contentWidth, y: currentY))
+        line.lineWidth = 0.5
+        line.stroke()
+
+        // Elevated emotion callout
+        if let elevated = gen.mostElevatedEmotion {
+            currentY += 10
+            checkPageBreak(needing: 44)
+            let calloutRect = CGRect(x: margin, y: currentY, width: contentWidth, height: 40)
+            UIColor(red: 0.906, green: 0.298, blue: 0.235, alpha: 0.06).setFill()
+            UIBezierPath(roundedRect: calloutRect, cornerRadius: 8).fill()
+
+            let calloutAttrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 10, weight: .medium),
+                .foregroundColor: UIColor(red: 0.5, green: 0.1, blue: 0.1, alpha: 1)
+            ]
+            let calloutText = "Note: \(elevated.label) was most elevated this week (avg \(String(format: "%.1f", elevated.score))/10). Consider discussing with your care team."
+            (calloutText as NSString).draw(
+                in: CGRect(x: margin + 12, y: currentY + 8, width: contentWidth - 24, height: 30),
+                withAttributes: calloutAttrs)
+            currentY += 50
+        } else {
+            currentY += 16
+        }
+    }
+
     // MARK: - Daily Log
     func drawDailyLog() {
         guard !gen.dailySnapshots.isEmpty else { return }
         checkPageBreak(needing: 80)
-        drawSectionTitle("DAILY LOG")
+        drawSectionTitle(NSLocalizedString("pdf.section.daily", comment: ""))
 
         let df = DateFormatter(); df.dateFormat = "EEE, MMM d"
 
@@ -362,17 +450,27 @@ class SymptomPDFRenderer {
             (df.string(from: snap.date) as NSString).draw(at: CGPoint(x: margin + 10, y: currentY + 6),
                                                            withAttributes: dateAttrs)
 
-            // Mood indicator
-            let moodText = "Mood: \(snap.mentalHealth)/10"
-            let mColor = moodColor(Double(snap.mentalHealth))
-            let moodAttrs: [NSAttributedString.Key: Any] = [
-                .font: UIFont.systemFont(ofSize: 10, weight: .semibold),
-                .foregroundColor: mColor
+            // Mood + emotional mini scores on the right
+            let moodParts = [
+                ("😊", snap.mentalHealth),
+                ("😤", snap.anger),
+                ("😰", snap.anxiety),
+                ("😔", snap.loneliness),
+                ("⚖️", snap.heaviness)
             ]
-            let moodSize = (moodText as NSString).size(withAttributes: moodAttrs)
-            (moodText as NSString).draw(
-                at: CGPoint(x: margin + contentWidth - moodSize.width - 10, y: currentY + 7),
-                withAttributes: moodAttrs)
+            var scoreX = margin + contentWidth - 10
+            for (emoji, val) in moodParts.reversed() {
+                let txt = "\(emoji)\(val)"
+                let a: [NSAttributedString.Key: Any] = [
+                    .font: UIFont.systemFont(ofSize: 9),
+                    .foregroundColor: val >= 7 ? UIColor(red:0.9,green:0.3,blue:0.2,alpha:1)
+                                              : val >= 4 ? UIColor(red:0.9,green:0.6,blue:0.1,alpha:1)
+                                                         : grayText
+                ]
+                let sz = (txt as NSString).size(withAttributes: a)
+                scoreX -= sz.width + 4
+                (txt as NSString).draw(at: CGPoint(x: scoreX, y: currentY + 8), withAttributes: a)
+            }
 
             currentY += 28
 
@@ -381,7 +479,7 @@ class SymptomPDFRenderer {
                     .font: UIFont.italicSystemFont(ofSize: 11),
                     .foregroundColor: UIColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 1)
                 ]
-                ("No symptoms logged" as NSString).draw(at: CGPoint(x: margin + 10, y: currentY + 4),
+                (NSLocalizedString("pdf.nosymptoms", comment: "") as NSString).draw(at: CGPoint(x: margin + 10, y: currentY + 4),
                                                         withAttributes: emptyAttrs)
                 currentY += 22
             } else {
@@ -452,7 +550,7 @@ class SymptomPDFRenderer {
             .font: UIFont.systemFont(ofSize: 8),
             .foregroundColor: UIColor(red: 0.75, green: 0.75, blue: 0.75, alpha: 1)
         ]
-        let disclaimer = "This report is for informational purposes only and does not constitute medical advice. Please share with your healthcare provider."
+        let disclaimer = NSLocalizedString("pdf.disclaimer", comment: "")
         let disclaimerWidth = contentWidth
         let disclaimerSize = (disclaimer as NSString).boundingRect(
             with: CGSize(width: disclaimerWidth, height: 40),

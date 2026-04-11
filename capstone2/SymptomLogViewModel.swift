@@ -59,20 +59,20 @@ class SymptomLogViewModel {
 
     func severityLabel(for score: Int) -> String {
         switch score {
-        case 1...3: return "Mild"
-        case 4...6: return "Moderate"
-        case 7...10: return "Severe"
+        case 1...3: return NSLocalizedString("custom.severity.mild",     comment: "")
+        case 4...6: return NSLocalizedString("emotion.intensity.moderate", comment: "")
+        case 7...10: return NSLocalizedString("custom.severity.severe",    comment: "")
         default: return ""
         }
     }
 
     func mentalHealthLabel(for score: Int) -> String {
         switch score {
-        case 1...2: return "Very Low"
-        case 3...4: return "Low"
-        case 5...6: return "Moderate"
-        case 7...8: return "Good"
-        case 9...10: return "Excellent"
+        case 1...2: return NSLocalizedString("mental.label.verylow",     comment: "")
+        case 3...4: return NSLocalizedString("mental.label.low",         comment: "")
+        case 5...6: return NSLocalizedString("mental.label.moderate",    comment: "")
+        case 7...8: return NSLocalizedString("mental.label.good",        comment: "")
+        case 9...10: return NSLocalizedString("mental.label.excellent",  comment: "")
         default: return ""
         }
     }
@@ -184,6 +184,13 @@ class SymptomLogViewModel {
 
         showingSaveConfirmation = true
         isSaved = true
+
+        // Fade back to normal button after 2.5 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            withAnimation(.easeInOut(duration: 0.5)) {
+                self.isSaved = false
+            }
+        }
     }
 
     // MARK: - Past symptoms for quick access

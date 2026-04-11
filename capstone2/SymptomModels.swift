@@ -34,6 +34,18 @@ enum SymptomCategory: String, CaseIterable, Codable {
         case .other: return "symptomOther"
         }
     }
+
+    var localizedTitle: String {
+        switch self {
+        case .fatigue:   return NSLocalizedString("category.fatigue",   comment: "")
+        case .pain:      return NSLocalizedString("category.pain",      comment: "")
+        case .nausea:    return NSLocalizedString("category.nausea",    comment: "")
+        case .cognitive: return NSLocalizedString("category.cognitive", comment: "")
+        case .emotional: return NSLocalizedString("category.emotional", comment: "")
+        case .skin:      return NSLocalizedString("category.skin",      comment: "")
+        case .other:     return NSLocalizedString("category.other",     comment: "")
+        }
+    }
 }
 
 // MARK: - Common Symptom

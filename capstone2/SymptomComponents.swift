@@ -54,7 +54,7 @@ struct SymptomCategorySection: View {
                         .background(Color(category.color).opacity(0.13))
                         .clipShape(RoundedRectangle(cornerRadius: 9))
 
-                    Text(category.rawValue)
+                    Text(category.localizedTitle)
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(Color("textPrimary"))
 
@@ -156,9 +156,9 @@ struct SymptomSeverityCard: View {
 
     var severityLabel: String {
         switch symptom.severity {
-        case 1...3: return "Mild"
-        case 4...6: return "Moderate"
-        default:    return "Severe"
+        case 1...3: return NSLocalizedString("custom.severity.mild", comment: "")
+        case 4...6: return NSLocalizedString("emotion.intensity.moderate", comment: "")
+        default:    return NSLocalizedString("custom.severity.severe", comment: "")
         }
     }
 
@@ -170,7 +170,7 @@ struct SymptomSeverityCard: View {
                 HStack(spacing: 5) {
                     Image(systemName: symptom.category.icon)
                         .font(.system(size: 10, weight: .semibold))
-                    Text(symptom.category.rawValue)
+                    Text(symptom.category.localizedTitle)
                         .font(.system(size: 11, weight: .semibold))
                 }
                 .foregroundStyle(Color(symptom.category.color))
@@ -317,20 +317,20 @@ struct CustomSymptomInputView: View {
             HStack {
                 Image(systemName: "plus.circle.fill")
                     .foregroundStyle(Color("accentTeal"))
-                Text("Add a Custom Symptom")
+                Text("custom.title")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(Color("textPrimary"))
             }
 
             // Symptom name field
             VStack(alignment: .leading, spacing: 6) {
-                Text("Symptom Name")
+                Text("custom.name.label")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(Color("textTertiary"))
                     .textCase(.uppercase)
                     .tracking(0.6)
 
-                TextField("e.g. Tingling in fingers", text: $viewModel.customSymptomName)
+                TextField(NSLocalizedString("custom.name.placeholder", comment: ""), text: $viewModel.customSymptomName)
                     .font(.system(size: 16))
                     .padding(14)
                     .background(Color("chipBackground"))
@@ -341,12 +341,12 @@ struct CustomSymptomInputView: View {
             // Category picker — clearly labelled
             VStack(alignment: .leading, spacing: 10) {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("Which category does this fall under?")
+                    Text("custom.category.label")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Color("textTertiary"))
                         .textCase(.uppercase)
                         .tracking(0.6)
-                    Text("This helps organise your symptoms — it does not log the category itself.")
+                    Text("custom.category.detail")
                         .font(.system(size: 12))
                         .foregroundStyle(Color("textTertiary"))
                 }
@@ -362,7 +362,7 @@ struct CustomSymptomInputView: View {
                                 Image(systemName: cat.icon)
                                     .font(.system(size: 13, weight: .semibold))
                                     .foregroundStyle(viewModel.customSymptomCategory == cat ? .white : Color(cat.color))
-                                Text(cat.rawValue)
+                                Text(cat.localizedTitle)
                                     .font(.system(size: 13, weight: .semibold))
                                     .foregroundStyle(viewModel.customSymptomCategory == cat ? .white : Color("textPrimary"))
                                     .lineLimit(1)
@@ -393,7 +393,7 @@ struct CustomSymptomInputView: View {
 
             // Action buttons
             HStack(spacing: 10) {
-                Button("Cancel") {
+                Button(NSLocalizedString("button.cancel", comment: "")) {
                     withAnimation { viewModel.showingCustomSymptom = false }
                 }
                 .font(.system(size: 15, weight: .medium))
@@ -409,7 +409,7 @@ struct CustomSymptomInputView: View {
                     HStack(spacing: 6) {
                         Image(systemName: "plus")
                             .font(.system(size: 13, weight: .bold))
-                        Text("Add Symptom")
+                        Text("custom.button.add")
                             .font(.system(size: 15, weight: .semibold))
                     }
                     .foregroundStyle(.white)
@@ -440,10 +440,10 @@ struct SaveConfirmationBanner: View {
                 .font(.system(size: 22))
                 .foregroundStyle(Color("successGreen"))
             VStack(alignment: .leading, spacing: 1) {
-                Text("All logged!")
+                Text("log.saved.banner")
                     .font(.system(size: 15, weight: .bold))
                     .foregroundStyle(Color("textPrimary"))
-                Text("Your symptoms have been saved.")
+                Text("log.saved.banner.sub")
                     .font(.system(size: 13))
                     .foregroundStyle(Color("textSecondary"))
             }
@@ -523,7 +523,7 @@ struct EmotionalQuestionCard: View {
 
             // Low / High labels
             HStack {
-                Text("Not at all")
+                Text(NSLocalizedString("eq.notatall", comment: ""))
                     .font(.system(size: 10, weight: .medium))
                     .foregroundStyle(Color("textTertiary"))
                 Spacer()
@@ -545,11 +545,12 @@ struct EmotionalQuestionCard: View {
 
     var highLabel: String {
         switch icon {
-        case "flame.fill":         return "Very angry"
-        case "cloud.rain.fill":    return "Very anxious"
-        case "person.fill.xmark":  return "Very isolated"
-        case "scalemass.fill":     return "Overwhelmingly heavy"
-        default:                   return "Intensely"
+        case "flame.fill":         return NSLocalizedString("eq.anger.high", comment: "")
+        case "cloud.rain.fill":    return NSLocalizedString("eq.anxiety.high", comment: "")
+        case "person.fill.xmark":  return NSLocalizedString("eq.loneliness.high", comment: "")
+        case "scalemass.fill":     return NSLocalizedString("eq.heaviness.high", comment: "")
+        default:                   return NSLocalizedString("eq.heaviness.high", comment: "")
         }
     }
 }
+

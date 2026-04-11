@@ -1,17 +1,11 @@
-//
-//  PDFExporterView.swift
-//  capstone2
-//
-//  Created by Xiaojing Meng on 3/11/26.
-//
 import SwiftUI
 import SwiftData
 
 // MARK: - Export Range
 enum ExportRange: String, CaseIterable {
-    case week  = "Last 7 Days"
-    case month = "Last 30 Days"
-    case all   = "All Time"
+    case week  = "pdf.range.week"
+    case month = "pdf.range.month"
+    case all   = "pdf.range.all"
 }
 
 // MARK: - PDF Export View (sheet)
@@ -24,6 +18,7 @@ struct PDFExportView: View {
     @State private var isGenerating = false
     @State private var pdfURL: URL? = nil
     @State private var showingShareSheet = false
+    @AppStorage("patientName") private var storedName = ""
     @State private var patientName = ""
 
     var filteredEntries: [SymptomEntry] {
@@ -55,12 +50,12 @@ struct PDFExportView: View {
                             .background(Color("accentTeal").opacity(0.1))
                             .clipShape(Circle())
 
-                        Text("Export Symptom Report")
+                        Text("pdf.export.title")
                             .font(.custom("Georgia", size: 22))
                             .fontWeight(.semibold)
                             .foregroundStyle(Color("textPrimary"))
 
-                        Text("Generate a PDF summary to share with your care team.")
+                        Text("pdf.export.subtitle")
                             .font(.system(size: 14))
                             .foregroundStyle(Color("textSecondary"))
                             .multilineTextAlignment(.center)
@@ -69,8 +64,8 @@ struct PDFExportView: View {
 
                     // Patient name (optional)
                     VStack(alignment: .leading, spacing: 8) {
-                        label("Your Name (optional)")
-                        TextField("e.g. Jane Smith", text: $patientName)
+                        label(NSLocalizedString("pdf.export.name", comment: ""))
+                        TextField(NSLocalizedString("pdf.export.name.placeholder", comment: ""), text: $patientName)
                             .font(.system(size: 16))
                             .padding(14)
                             .background(Color("chipBackground"))
@@ -79,13 +74,13 @@ struct PDFExportView: View {
 
                     // Date range selector
                     VStack(alignment: .leading, spacing: 10) {
-                        label("Date Range")
+                        label(NSLocalizedString("pdf.export.range", comment: ""))
                         HStack(spacing: 10) {
                             ForEach(ExportRange.allCases, id: \.self) { range in
                                 Button {
                                     withAnimation(.spring(response: 0.25)) { selectedRange = range }
                                 } label: {
-                                    Text(range.rawValue)
+                                    Text(NSLocalizedString(range.rawValue, comment: ""))
                                         .font(.system(size: 13, weight: .semibold))
                                         .foregroundStyle(selectedRange == range ? .white : Color("textSecondary"))
                                         .frame(maxWidth: .infinity)
@@ -114,7 +109,7 @@ struct PDFExportView: View {
                                 Image(systemName: "arrow.up.doc.fill")
                                     .font(.system(size: 16, weight: .semibold))
                             }
-                            Text(isGenerating ? "Generating…" : "Generate & Share PDF")
+                            Text(isGenerating ? NSLocalizedString("pdf.export.generating", comment: "") : NSLocalizedString("pdf.export.generate", comment: ""))
                                 .font(.system(size: 16, weight: .semibold))
                         }
                         .foregroundStyle(.white)
@@ -129,7 +124,7 @@ struct PDFExportView: View {
                     .disabled(filteredEntries.isEmpty || isGenerating)
 
                     if filteredEntries.isEmpty {
-                        Text("No entries found for the selected date range.")
+                        Text("pdf.export.nodata")
                             .font(.system(size: 13))
                             .foregroundStyle(Color("textTertiary"))
                             .multilineTextAlignment(.center)
@@ -147,6 +142,7 @@ struct PDFExportView: View {
                 }
             }
             .background(Color("backgroundPrimary"))
+        .onAppear { if patientName.isEmpty { patientName = storedName } }
         }
         .sheet(isPresented: $showingShareSheet) {
             if let url = pdfURL {
@@ -159,7 +155,7 @@ struct PDFExportView: View {
     var previewCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text("Report Preview")
+                Text("pdf.export.preview")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(Color("textPrimary"))
                 Spacer()
@@ -179,23 +175,23 @@ struct PDFExportView: View {
             if let top = generator.mostConcerningSymptom {
                 previewRow(icon: "exclamationmark.triangle.fill",
                            iconColor: Color("severityHigh"),
-                           title: "Most Concerning",
+                           title: NSLocalizedString("pdf.export.concerning", comment: ""),
                            value: "\(top.name) — avg severity \(String(format: "%.1f", top.avgSeverity))/10")
             }
 
             previewRow(icon: "heart.fill",
                        iconColor: Color("accentTeal"),
-                       title: "Avg Mental Health",
+                       title: NSLocalizedString("pdf.export.avgmood", comment: ""),
                        value: String(format: "%.1f / 10", generator.avgMentalHealth))
 
             previewRow(icon: "list.bullet",
                        iconColor: Color("accentTeal"),
-                       title: "Unique Symptoms",
+                       title: NSLocalizedString("pdf.export.unique", comment: ""),
                        value: "\(generator.uniqueSymptomCount) tracked")
 
             previewRow(icon: "calendar",
                        iconColor: Color("accentTeal"),
-                       title: "Date Range",
+                       title: NSLocalizedString("pdf.export.daterange", comment: ""),
                        value: generator.dateRangeLabel)
         }
         .padding(16)
