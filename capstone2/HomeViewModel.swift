@@ -66,15 +66,17 @@ struct WeeklySummary {
     }
 
     /// The emotional dimension with the highest average score this week
-    var mostElevatedEmotion: (label: String, icon: String, score: Double, color: String)? {
+    var mostElevatedEmotion: (emotionKey: String, label: String, icon: String, score: Double, color: String)? {
         guard !entries.isEmpty else { return nil }
-        let scores: [(String, String, Double, String)] = [
-            (NSLocalizedString("emotion.anger", comment: ""),       "flame.fill",        averageAnger,      "E74C3C"),
-            (NSLocalizedString("emotion.anxiety", comment: ""),     "cloud.rain.fill",   averageAnxiety,    "5B85C4"),
-            (NSLocalizedString("emotion.loneliness", comment: ""),  "person.fill.xmark", averageLoneliness, "8E44AD"),
-            (NSLocalizedString("emotion.heaviness", comment: ""),   "scalemass.fill",    averageHeaviness,  "5D7A8A"),
+        // emotionKey is a stable English identifier used for switch matching
+        // label is the localised display string
+        let scores: [(String, String, String, Double, String)] = [
+            ("anger",     NSLocalizedString("home.emotion.anger",     comment: ""), "flame.fill",        averageAnger,      "E74C3C"),
+            ("anxiety",   NSLocalizedString("home.emotion.anxiety",   comment: ""), "cloud.rain.fill",   averageAnxiety,    "5B85C4"),
+            ("loneliness",NSLocalizedString("home.emotion.loneliness",comment: ""), "person.fill.xmark", averageLoneliness, "8E44AD"),
+            ("heaviness", NSLocalizedString("home.emotion.heaviness", comment: ""), "scalemass.fill",    averageHeaviness,  "5D7A8A"),
         ]
-        return scores.filter { $0.2 >= 4 }.max(by: { $0.2 < $1.2 })
+        return scores.filter { $0.3 >= 4 }.max(by: { $0.3 < $1.3 })
     }
 
     var allSymptoms: [LoggedSymptom] {
@@ -241,23 +243,20 @@ class HomeViewModel {
     func wellbeingMessage(for summary: WeeklySummary) -> String {
         guard !summary.entries.isEmpty else { return NSLocalizedString("home.wellbeing.nodata", comment: "") }
         let avg = summary.averageMentalHealth
-        // Surface the most elevated emotional dimension if significant
+        // Surface the most elevated emotional dimension if significant.
+        // We match by emotionKey (stable identifier) not the localised label string.
         if let top = summary.mostElevatedEmotion, top.score >= 6 {
-            switch top.label {
-            case "Anger / Frustration":
-                return "Frustration has been elevated this week. Those feelings are valid — recovery is hard. 🤍"
-            case "Worry / Anxiety":
-                return "Anxiety about recovery has been high. Try to take it one day at a time. You're doing the work. 💙"
-            case "Loneliness":
-                return "Loneliness has been present this week. Reaching out to someone, even briefly, can help. 🌿"
-            default:
-                return "This week has felt heavy. Be gentle with yourself — rest is part of recovery. 🤍"
+            switch top.emotionKey {
+            case "anger":     return NSLocalizedString("home.wellbeing.anger",     comment: "")
+            case "anxiety":   return NSLocalizedString("home.wellbeing.anxiety",   comment: "")
+            case "loneliness":return NSLocalizedString("home.wellbeing.loneliness",comment: "")
+            default:          return NSLocalizedString("home.wellbeing.heavy",     comment: "")
             }
         }
         switch avg {
         case 7...10: return NSLocalizedString("home.wellbeing.strong", comment: "")
-        case 4..<7:  return NSLocalizedString("home.wellbeing.mixed", comment: "")
-        case 1..<4:  return NSLocalizedString("home.wellbeing.tough", comment: "")
+        case 4..<7:  return NSLocalizedString("home.wellbeing.mixed",  comment: "")
+        case 1..<4:  return NSLocalizedString("home.wellbeing.tough",  comment: "")
         default:     return NSLocalizedString("home.wellbeing.nodata", comment: "")
         }
     }

@@ -8,18 +8,42 @@ enum ExportRange: String, CaseIterable {
     case all   = "pdf.range.all"
 }
 
-// MARK: - PDF Export View (sheet)
+// MARK: - PDF Language
+struct PDFLanguage: Identifiable, Hashable {
+    let id: String
+    let displayName: String
+    let flag: String
+
+    static let all: [PDFLanguage] = [
+        PDFLanguage(id: "en",      displayName: "English",   flag: "🇬🇧"),
+        PDFLanguage(id: "es",      displayName: "Español",   flag: "🇪🇸"),
+        PDFLanguage(id: "fr",      displayName: "Français",  flag: "🇫🇷"),
+        PDFLanguage(id: "zh-Hans", displayName: "中文",       flag: "🇨🇳"),
+        PDFLanguage(id: "pt-BR",   displayName: "Português", flag: "🇧🇷"),
+    ]
+
+    static var appLanguageMatch: PDFLanguage {
+        let current = UserDefaults.standard.string(forKey: "selectedLanguage")
+            ?? Locale.current.language.languageCode?.identifier ?? "en"
+        return all.first { current.hasPrefix($0.id) || $0.id.hasPrefix(current) } ?? all[0]
+    }
+}
+
+// MARK: - PDF Export View
 struct PDFExportView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \SymptomEntry.date, order: .reverse) private var entries: [SymptomEntry]
 
     @State private var selectedRange: ExportRange = .week
+    @State private var selectedLanguage: PDFLanguage = PDFLanguage.appLanguageMatch
     @State private var isGenerating = false
     @State private var pdfURL: URL? = nil
     @State private var showingShareSheet = false
     @AppStorage("patientName") private var storedName = ""
     @State private var patientName = ""
+
+
 
     var filteredEntries: [SymptomEntry] {
         let calendar = Calendar.current
@@ -36,12 +60,18 @@ struct PDFExportView: View {
         }
     }
 
+    var pdfBundle: Bundle {
+        guard let path = Bundle.main.path(forResource: selectedLanguage.id, ofType: "lproj"),
+              let bundle = Bundle(path: path) else { return .main }
+        return bundle
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
 
-                    // Header illustration
+                    // Header
                     VStack(spacing: 10) {
                         Image(systemName: "doc.richtext")
                             .font(.system(size: 44))
@@ -62,7 +92,7 @@ struct PDFExportView: View {
                     }
                     .padding(.top, 8)
 
-                    // Patient name (optional)
+                    // Patient name
                     VStack(alignment: .leading, spacing: 8) {
                         label(NSLocalizedString("pdf.export.name", comment: ""))
                         TextField(NSLocalizedString("pdf.export.name.placeholder", comment: ""), text: $patientName)
@@ -72,7 +102,7 @@ struct PDFExportView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 13))
                     }
 
-                    // Date range selector
+                    // Date range
                     VStack(alignment: .leading, spacing: 10) {
                         label(NSLocalizedString("pdf.export.range", comment: ""))
                         HStack(spacing: 10) {
@@ -92,6 +122,43 @@ struct PDFExportView: View {
                         }
                     }
 
+                    // PDF Language picker
+                    VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            label(NSLocalizedString("pdf.language.picker", comment: ""))
+                            Text("pdf.language.hint")
+                                .font(.system(size: 12))
+                                .foregroundStyle(Color("textTertiary"))
+                        }
+
+                        HStack(spacing: 8) {
+                            ForEach(PDFLanguage.all) { lang in
+                                Button {
+                                    withAnimation(.spring(response: 0.25)) { selectedLanguage = lang }
+                                } label: {
+                                    VStack(spacing: 4) {
+                                        Text(lang.flag)
+                                            .font(.system(size: 22))
+                                        Text(lang.displayName)
+                                            .font(.system(size: 10, weight: .semibold))
+                                            .foregroundStyle(selectedLanguage == lang ? .white : Color("textSecondary"))
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.7)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 10)
+                                    .background(selectedLanguage == lang ? Color("accentTeal") : Color("chipBackground"))
+                                    .clipShape(RoundedRectangle(cornerRadius: 11))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 11)
+                                            .stroke(selectedLanguage == lang ? Color.clear : Color("borderColor"), lineWidth: 1)
+                                    )
+                                }
+                            }
+                        }
+
+                    }
+
                     // Preview summary
                     previewCard
 
@@ -109,7 +176,7 @@ struct PDFExportView: View {
                                 Image(systemName: "arrow.up.doc.fill")
                                     .font(.system(size: 16, weight: .semibold))
                             }
-                            Text(isGenerating ? NSLocalizedString("pdf.export.generating", comment: "") : NSLocalizedString("pdf.export.generate", comment: ""))
+                            Text(buttonLabel)
                                 .font(.system(size: 16, weight: .semibold))
                         }
                         .foregroundStyle(.white)
@@ -137,16 +204,43 @@ struct PDFExportView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }
+                    Button(NSLocalizedString("button.close", comment: "")) { dismiss() }
                         .foregroundStyle(Color("textSecondary"))
                 }
             }
             .background(Color("backgroundPrimary"))
-        .onAppear { if patientName.isEmpty { patientName = storedName } }
+            .onAppear { if patientName.isEmpty { patientName = storedName } }
+
         }
         .sheet(isPresented: $showingShareSheet) {
             if let url = pdfURL {
                 ShareSheet(activityItems: [url])
+            }
+        }
+
+    }
+
+    var buttonLabel: String {
+        if isGenerating { return NSLocalizedString("pdf.export.generating", comment: "") }
+        return NSLocalizedString("pdf.export.generate", comment: "")
+    }
+
+    // MARK: - Generate PDF
+    func generatePDF() {
+        isGenerating = true
+        DispatchQueue.global(qos: .userInitiated).async {
+            let generator = PDFDataGenerator(
+                entries: filteredEntries,
+                patientName: patientName,
+                range: selectedRange,
+                pdfBundle: pdfBundle
+            )
+            let renderer = SymptomPDFRenderer(generator: generator)
+            let url = renderer.render()
+            DispatchQueue.main.async {
+                self.pdfURL = url
+                self.isGenerating = false
+                self.showingShareSheet = url != nil
             }
         }
     }
@@ -159,7 +253,7 @@ struct PDFExportView: View {
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(Color("textPrimary"))
                 Spacer()
-                Text("\(filteredEntries.count) entries")
+                Text(String(format: NSLocalizedString("pdf.export.entries", comment: ""), filteredEntries.count))
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(Color("accentTeal"))
                     .padding(.horizontal, 10).padding(.vertical, 4)
@@ -169,14 +263,14 @@ struct PDFExportView: View {
 
             Divider()
 
-            let generator = PDFDataGenerator(entries: filteredEntries, patientName: patientName, range: selectedRange)
+            let generator = PDFDataGenerator(entries: filteredEntries, patientName: patientName,
+                                             range: selectedRange, pdfBundle: pdfBundle)
 
-            // Concerning symptoms
             if let top = generator.mostConcerningSymptom {
                 previewRow(icon: "exclamationmark.triangle.fill",
                            iconColor: Color("severityHigh"),
                            title: NSLocalizedString("pdf.export.concerning", comment: ""),
-                           value: "\(top.name) — avg severity \(String(format: "%.1f", top.avgSeverity))/10")
+                           value: "\(NSLocalizedString(top.name, comment: top.name)) — avg \(String(format: "%.1f", top.avgSeverity))/10")
             }
 
             previewRow(icon: "heart.fill",
@@ -187,7 +281,8 @@ struct PDFExportView: View {
             previewRow(icon: "list.bullet",
                        iconColor: Color("accentTeal"),
                        title: NSLocalizedString("pdf.export.unique", comment: ""),
-                       value: "\(generator.uniqueSymptomCount) tracked")
+                       value: String(format: NSLocalizedString("pdf.export.tracked", comment: ""),
+                                     generator.uniqueSymptomCount))
 
             previewRow(icon: "calendar",
                        iconColor: Color("accentTeal"),
@@ -224,21 +319,6 @@ struct PDFExportView: View {
             .foregroundStyle(Color("textTertiary"))
             .textCase(.uppercase)
             .tracking(0.7)
-    }
-
-    // MARK: - Generate PDF
-    func generatePDF() {
-        isGenerating = true
-        DispatchQueue.global(qos: .userInitiated).async {
-            let generator = PDFDataGenerator(entries: filteredEntries, patientName: patientName, range: selectedRange)
-            let renderer = SymptomPDFRenderer(generator: generator)
-            let url = renderer.render()
-            DispatchQueue.main.async {
-                self.pdfURL = url
-                self.isGenerating = false
-                self.showingShareSheet = url != nil
-            }
-        }
     }
 }
 

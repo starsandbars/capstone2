@@ -32,11 +32,26 @@ class PDFDataGenerator {
     let patientName: String
     let range: ExportRange
     let generatedAt = Date()
+    let pdfBundle: Bundle   // language bundle for the PDF output
 
-    init(entries: [SymptomEntry], patientName: String, range: ExportRange) {
+    init(entries: [SymptomEntry], patientName: String, range: ExportRange, pdfBundle: Bundle = .main) {
         self.entries = entries.sorted { $0.date < $1.date }
         self.patientName = patientName
         self.range = range
+        self.pdfBundle = pdfBundle
+    }
+
+    /// Resolve a UI string in the chosen PDF language
+    func str(_ key: String) -> String {
+        pdfBundle.localizedString(forKey: key, value: key, table: nil)
+    }
+
+    /// Resolve a symptom name:
+    /// - Preloaded symptoms: looks up the catalog key in the PDF language bundle
+    /// - Custom symptoms: returns the raw text as typed by the user
+    func resolveSymptomName(_ name: String) -> String {
+        let catalogAttempt = pdfBundle.localizedString(forKey: name, value: "", table: nil)
+        return catalogAttempt.isEmpty ? name : catalogAttempt
     }
 
     // MARK: - Stats
@@ -58,10 +73,10 @@ class PDFDataGenerator {
             if half > 0 {
                 let first = Double(severities.prefix(half).reduce(0, +)) / Double(half)
                 let last  = Double(severities.suffix(half).reduce(0, +)) / Double(half)
-                if last > first + 0.5      { trend = NSLocalizedString("pdf.trend.worsening", comment: "") }
-                else if last < first - 0.5 { trend = NSLocalizedString("pdf.trend.improving", comment: "") }
+                if last > first + 0.5      { trend = str("pdf.trend.worsening") }
+                else if last < first - 0.5 { trend = str("pdf.trend.improving") }
                 else                       { trend = NSLocalizedString("pdf.trend.stable",    comment: "") }
-            } else { trend = NSLocalizedString("pdf.trend.stable", comment: "") }
+            } else { trend = str("pdf.trend.stable") }
             return SymptomStat(name: name, category: data.0,
                                occurrences: severities.count, avgSeverity: avg,
                                maxSeverity: maxVal, trend: trend)
@@ -70,7 +85,7 @@ class PDFDataGenerator {
     }
 
     var mostConcerningSymptom: SymptomStat? {
-        let worsening = symptomStats.filter { $0.trend == NSLocalizedString("pdf.trend.worsening", comment: "") }
+        let worsening = symptomStats.filter { $0.trend == str("pdf.trend.worsening") }
         return (worsening.isEmpty ? symptomStats : worsening).first
     }
 
@@ -102,10 +117,10 @@ class PDFDataGenerator {
     /// All four emotional dimensions as a sorted array for PDF rendering
     var emotionalScores: [(label: String, score: Double)] {
         [
-            (NSLocalizedString("pdf.emotional.anger", comment: ""), avgAnger),
-            (NSLocalizedString("pdf.emotional.anxiety", comment: ""), avgAnxiety),
-            (NSLocalizedString("pdf.emotional.loneliness", comment: ""), avgLoneliness),
-            (NSLocalizedString("pdf.emotional.heaviness", comment: ""), avgHeaviness),
+            (str("pdf.emotional.anger"), avgAnger),
+            (str("pdf.emotional.anxiety"), avgAnxiety),
+            (str("pdf.emotional.loneliness"), avgLoneliness),
+            (str("pdf.emotional.heaviness"), avgHeaviness),
         ]
     }
 
@@ -147,16 +162,20 @@ class PDFDataGenerator {
     var overallSummary: String {
         guard !entries.isEmpty else { return "No symptom data available for the selected period." }
         var parts: [String] = []
-        parts.append("Over \(entries.count) logged day(s), \(uniqueSymptomCount) distinct symptom(s) were recorded.")
+        let daysFmt = str("pdf.summary.days")
+        parts.append(String(format: daysFmt, entries.count, uniqueSymptomCount))
         if let top = mostConcerningSymptom {
-            parts.append("The most notable symptom was \(top.name) (average severity \(String(format: "%.1f", top.avgSeverity))/10, \(top.trend.lowercased())).")
+            let localSymptomName = resolveSymptomName(top.name)
+        let notableFmt = str("pdf.summary.notable")
+        parts.append(String(format: notableFmt, localSymptomName, top.avgSeverity, top.trend.lowercased()))
         }
         let avg = avgMentalHealth
-        if avg >= 7 { parts.append(NSLocalizedString("pdf.overall.mood.strong", comment: "")) }
-        else if avg >= 4 { parts.append(NSLocalizedString("pdf.overall.mood.moderate", comment: "")) }
-        else { parts.append(NSLocalizedString("pdf.overall.mood.challenging", comment: "")) }
+        if avg >= 7 { parts.append(str("pdf.overall.mood.strong")) }
+        else if avg >= 4 { parts.append(str("pdf.overall.mood.moderate")) }
+        else { parts.append(str("pdf.overall.mood.challenging")) }
         if let elevated = mostElevatedEmotion {
-            parts.append("The most elevated emotional dimension was \(elevated.label) (avg \(String(format: "%.1f", elevated.score))/10) — this may be worth discussing with a clinician.")
+            let elevatedFmt = str("pdf.summary.elevated")
+        parts.append(String(format: elevatedFmt, elevated.label, elevated.score))
         }
         return parts.joined(separator: " ")
     }

@@ -327,10 +327,10 @@ struct SuggestionsSheet: View {
                         Text("💡")
                             .font(.system(size: 28))
                         VStack(alignment: .leading, spacing: 3) {
-                            Text("Recovery-friendly habits")
+                            Text("habits.suggestions.title")
                                 .font(.system(size: 15, weight: .bold))
                                 .foregroundStyle(Color("textPrimary"))
-                            Text("Curated small steps to rebuild daily life.")
+                            Text("habits.suggestions.subtitle")
                                 .font(.system(size: 13))
                                 .foregroundStyle(Color("textSecondary"))
                         }
@@ -483,7 +483,7 @@ struct HabitDetailSheet: View {
                     // 7-day history
                     if habit.frequency == .daily {
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("Last 7 Days")
+                            Text("pdf.range.week")
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundStyle(Color("textPrimary"))
 

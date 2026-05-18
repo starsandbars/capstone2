@@ -105,14 +105,14 @@ class SymptomPDFRenderer {
             .foregroundColor: UIColor.white.withAlphaComponent(0.75),
             .kern: 1.5
         ]
-        (NSLocalizedString("pdf.app", comment: "") as NSString).draw(at: CGPoint(x: margin, y: 22), withAttributes: appAttrs)
+        (gen.str("pdf.app") as NSString).draw(at: CGPoint(x: margin, y: 22), withAttributes: appAttrs)
 
         // Report title
         let titleAttrs: [NSAttributedString.Key: Any] = [
             .font: UIFont(name: "Georgia-Bold", size: 26) ?? UIFont.boldSystemFont(ofSize: 26),
             .foregroundColor: UIColor.white
         ]
-        (NSLocalizedString("pdf.title", comment: "") as NSString).draw(at: CGPoint(x: margin, y: 44), withAttributes: titleAttrs)
+        (gen.str("pdf.title") as NSString).draw(at: CGPoint(x: margin, y: 44), withAttributes: titleAttrs)
 
         // Date range
         let subAttrs: [NSAttributedString.Key: Any] = [
@@ -177,7 +177,7 @@ class SymptomPDFRenderer {
             .foregroundColor: teal,
             .kern: 1.0
         ]
-        (NSLocalizedString("pdf.section.summary", comment: "") as NSString).draw(at: CGPoint(x: margin + 16, y: currentY + 14),
+        (gen.str("pdf.section.summary") as NSString).draw(at: CGPoint(x: margin + 16, y: currentY + 14),
                                                withAttributes: labelAttrs)
 
         // Summary text
@@ -192,14 +192,14 @@ class SymptomPDFRenderer {
     func drawKeyMetrics() {
         checkPageBreak(needing: 90)
 
-        let sectionTitle = NSLocalizedString("pdf.section.glance", comment: "")
+        let sectionTitle = gen.str("pdf.section.glance")
         drawSectionTitle(sectionTitle)
 
         let metrics: [(String, String, UIColor)] = [
-            (NSLocalizedString("pdf.metric.dayslogged", comment: ""),    "\(gen.entries.count)",                      teal),
-            (NSLocalizedString("pdf.metric.symptoms", comment: ""), "\(gen.uniqueSymptomCount)",                 teal),
-            (NSLocalizedString("pdf.metric.mood", comment: ""),       String(format: "%.1f/10", gen.avgMentalHealth), moodColor(gen.avgMentalHealth)),
-            (NSLocalizedString("pdf.metric.severe", comment: ""),    gen.topSymptoms.first.map { String(format: "%.1f", $0.avgSeverity) } ?? "N/A",
+            (gen.str("pdf.metric.dayslogged"),    "\(gen.entries.count)",                      teal),
+            (gen.str("pdf.metric.symptoms"), "\(gen.uniqueSymptomCount)",                 teal),
+            (gen.str("pdf.metric.mood"),       String(format: "%.1f/10", gen.avgMentalHealth), moodColor(gen.avgMentalHealth)),
+            (gen.str("pdf.metric.severe"),    gen.topSymptoms.first.map { String(format: "%.1f", $0.avgSeverity) } ?? "N/A",
                                severityColor(gen.topSymptoms.first?.avgSeverity ?? 0))
         ]
 
@@ -238,16 +238,16 @@ class SymptomPDFRenderer {
     func drawSymptomTable() {
         guard !gen.topSymptoms.isEmpty else { return }
         checkPageBreak(needing: 120)
-        drawSectionTitle(NSLocalizedString("pdf.section.symptoms", comment: ""))
+        drawSectionTitle(gen.str("pdf.section.symptoms"))
 
         // Table header
         let cols: [(String, CGFloat)] = [
-            (NSLocalizedString("pdf.col.symptom", comment: ""),   0.32),
-            (NSLocalizedString("pdf.col.category", comment: ""),  0.20),
-            (NSLocalizedString("pdf.col.times", comment: ""),     0.10),
-            (NSLocalizedString("pdf.col.avgsev", comment: ""),   0.13),
-            (NSLocalizedString("pdf.col.maxsev", comment: ""),   0.13),
-            (NSLocalizedString("pdf.col.trend", comment: ""),     0.12)
+            (gen.str("pdf.col.symptom"),   0.32),
+            (gen.str("pdf.col.category"),  0.20),
+            (gen.str("pdf.col.times"),     0.10),
+            (gen.str("pdf.col.avgsev"),   0.13),
+            (gen.str("pdf.col.maxsev"),   0.13),
+            (gen.str("pdf.col.trend"),     0.12)
         ]
 
         let headerH: CGFloat = 26
@@ -313,7 +313,7 @@ class SymptomPDFRenderer {
             var cx = margin
 
             let values: [(String, [NSAttributedString.Key: Any], CGFloat)] = [
-                (stat.name,                     cellAttrs, contentWidth * 0.32),
+                (gen.resolveSymptomName(stat.name), cellAttrs, contentWidth * 0.32),
                 (stat.category.rawValue,         smallAttrs, contentWidth * 0.20),
                 ("\(stat.occurrences)x",         smallAttrs, contentWidth * 0.10),
                 (String(format: "%.1f", stat.avgSeverity), sevAttrs, contentWidth * 0.13),
@@ -337,15 +337,15 @@ class SymptomPDFRenderer {
     func drawEmotionalScores() {
         guard !gen.entries.isEmpty else { return }
         checkPageBreak(needing: 160)
-        drawSectionTitle(NSLocalizedString("pdf.section.emotional", comment: ""))
+        drawSectionTitle(gen.str("pdf.section.emotional"))
 
         // Overall mood score row
         let moodRow: [(String, Double, UIColor)] = [
-            (NSLocalizedString("pdf.emotional.mood",      comment: ""),       gen.avgMentalHealth, moodColor(gen.avgMentalHealth)),
-            (NSLocalizedString("pdf.emotional.anger",      comment: ""),gen.avgAnger,        UIColor(red: 0.906, green: 0.298, blue: 0.235, alpha: 1)),
-            (NSLocalizedString("pdf.emotional.anxiety",    comment: ""),    gen.avgAnxiety,      UIColor(red: 0.357, green: 0.522, blue: 0.769, alpha: 1)),
-            (NSLocalizedString("pdf.emotional.loneliness", comment: ""),         gen.avgLoneliness,   UIColor(red: 0.557, green: 0.267, blue: 0.678, alpha: 1)),
-            (NSLocalizedString("pdf.emotional.heaviness",  comment: ""),gen.avgHeaviness,    UIColor(red: 0.365, green: 0.475, blue: 0.541, alpha: 1)),
+            (gen.str("pdf.emotional.mood"),       gen.avgMentalHealth, moodColor(gen.avgMentalHealth)),
+            (gen.str("pdf.emotional.anger"),gen.avgAnger,        UIColor(red: 0.906, green: 0.298, blue: 0.235, alpha: 1)),
+            (gen.str("pdf.emotional.anxiety"),    gen.avgAnxiety,      UIColor(red: 0.357, green: 0.522, blue: 0.769, alpha: 1)),
+            (gen.str("pdf.emotional.loneliness"),         gen.avgLoneliness,   UIColor(red: 0.557, green: 0.267, blue: 0.678, alpha: 1)),
+            (gen.str("pdf.emotional.heaviness"),gen.avgHeaviness,    UIColor(red: 0.365, green: 0.475, blue: 0.541, alpha: 1)),
         ]
 
         let rowH: CGFloat = 30
@@ -430,7 +430,7 @@ class SymptomPDFRenderer {
     func drawDailyLog() {
         guard !gen.dailySnapshots.isEmpty else { return }
         checkPageBreak(needing: 80)
-        drawSectionTitle(NSLocalizedString("pdf.section.daily", comment: ""))
+        drawSectionTitle(gen.str("pdf.section.daily"))
 
         let df = DateFormatter(); df.dateFormat = "EEE, MMM d"
 
@@ -479,7 +479,7 @@ class SymptomPDFRenderer {
                     .font: UIFont.italicSystemFont(ofSize: 11),
                     .foregroundColor: UIColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 1)
                 ]
-                (NSLocalizedString("pdf.nosymptoms", comment: "") as NSString).draw(at: CGPoint(x: margin + 10, y: currentY + 4),
+                (gen.str("pdf.nosymptoms") as NSString).draw(at: CGPoint(x: margin + 10, y: currentY + 4),
                                                         withAttributes: emptyAttrs)
                 currentY += 22
             } else {
@@ -495,7 +495,7 @@ class SymptomPDFRenderer {
                         .font: UIFont.systemFont(ofSize: 11),
                         .foregroundColor: darkText
                     ]
-                    (symptom.name as NSString).draw(at: CGPoint(x: margin + 22, y: currentY + 3),
+                    (gen.resolveSymptomName(symptom.name) as NSString).draw(at: CGPoint(x: margin + 22, y: currentY + 3),
                                                     withAttributes: symAttrs)
 
                     // Severity bar
@@ -550,7 +550,7 @@ class SymptomPDFRenderer {
             .font: UIFont.systemFont(ofSize: 8),
             .foregroundColor: UIColor(red: 0.75, green: 0.75, blue: 0.75, alpha: 1)
         ]
-        let disclaimer = NSLocalizedString("pdf.disclaimer", comment: "")
+        let disclaimer = gen.str("pdf.disclaimer")
         let disclaimerWidth = contentWidth
         let disclaimerSize = (disclaimer as NSString).boundingRect(
             with: CGSize(width: disclaimerWidth, height: 40),

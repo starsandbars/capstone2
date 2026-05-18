@@ -201,7 +201,7 @@ struct FrequencyRow: View {
 
             // Name + category
             VStack(alignment: .leading, spacing: 2) {
-                Text(name)
+                Text(NSLocalizedString(name, comment: name))
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(Color("textPrimary"))
                 Text(category.localizedTitle)
@@ -275,7 +275,7 @@ struct MentalHealthArcRow: View {
             if !sortedEntries.isEmpty {
                 let avg = Double(sortedEntries.map(\.mentalHealthScore).reduce(0, +)) / Double(sortedEntries.count)
                 HStack {
-                    Text("Weekly average:")
+                    Text("home.mental.weeklyaverage")
                         .font(.system(size: 13))
                         .foregroundStyle(Color("textSecondary"))
                     Text(String(format: "%.1f / 10", avg))
@@ -306,9 +306,9 @@ struct MentalHealthArcRow: View {
     }
 
     func moodLabel(for value: Double) -> String {
-        if value >= 7 { return "Good" }
-        if value >= 4 { return "Moderate" }
-        return "Difficult"
+        if value >= 7 { return NSLocalizedString("home.mood.good",     comment: "") }
+        if value >= 4 { return NSLocalizedString("home.mood.moderate", comment: "") }
+        return NSLocalizedString("home.mood.difficult", comment: "")
     }
 }
 
@@ -442,11 +442,11 @@ struct EmotionalSummaryRow: View {
 
     var intensityLabel: String {
         switch score {
-        case 0..<2:  return NSLocalizedString("emotion.intensity.minimal", comment: "")
-        case 2..<4:  return "Low"
-        case 4..<6:  return "Moderate"
+        case 0..<2:  return NSLocalizedString("emotion.intensity.minimal",  comment: "")
+        case 2..<4:  return NSLocalizedString("emotion.intensity.low",      comment: "")
+        case 4..<6:  return NSLocalizedString("emotion.intensity.moderate", comment: "")
         case 6..<8:  return NSLocalizedString("emotion.intensity.elevated", comment: "")
-        default:     return "High"
+        default:     return NSLocalizedString("emotion.intensity.high",     comment: "")
         }
     }
 

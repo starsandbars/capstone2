@@ -14,7 +14,7 @@ struct SymptomChip: View {
                         .font(.system(size: 11, weight: .bold))
                         .transition(.scale.combined(with: .opacity))
                 }
-                Text(symptom.name)
+                Text(symptom.localizedName)
                     .font(.system(size: 14, weight: isSelected ? .semibold : .regular))
             }
             .foregroundStyle(isSelected ? .white : Color("textPrimary"))
@@ -178,7 +178,7 @@ struct SymptomSeverityCard: View {
                 .background(Color(symptom.category.color).opacity(0.1))
                 .clipShape(Capsule())
 
-                Text(symptom.name)
+                Text(symptom.localizedName)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(Color("textPrimary"))
 
@@ -207,7 +207,7 @@ struct SymptomSeverityCard: View {
                 SeveritySlider(value: $symptom.severity, color: severityColor)
 
                 HStack {
-                    Text("Mild")
+                    Text("custom.severity.mild")
                         .font(.system(size: 10, weight: .medium))
                         .foregroundStyle(Color("severityLow"))
                     Spacer()
@@ -216,7 +216,7 @@ struct SymptomSeverityCard: View {
                         .foregroundStyle(severityColor)
                         .contentTransition(.numericText())
                     Spacer()
-                    Text("Severe")
+                    Text("custom.severity.severe")
                         .font(.system(size: 10, weight: .medium))
                         .foregroundStyle(Color("severityHigh"))
                 }
@@ -553,4 +553,3 @@ struct EmotionalQuestionCard: View {
         }
     }
 }
-

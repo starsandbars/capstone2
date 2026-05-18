@@ -4,12 +4,12 @@ import UserNotifications
 
 // MARK: - Onboarding slide index
 enum OnboardingSlide: Int, CaseIterable {
-    case language      = 0
-    case welcome       = 1
-    case name          = 2
-    case tour          = 3
-    case habits        = 4
-    case notifications = 5
+    case welcome       = 0
+    case name          = 1
+    case tour          = 2
+    case habits        = 3
+    case notifications = 4
+    case language      = 5
     case ready         = 6
 }
 
@@ -18,7 +18,7 @@ struct OnboardingView: View {
     @AppStorage("patientName") private var storedName = ""
     @Environment(\.modelContext) private var modelContext
 
-    @State private var currentSlide: OnboardingSlide = .language
+    @State private var currentSlide: OnboardingSlide = .welcome
     @State private var nameInput = ""
     @State private var selectedHabits: Set<UUID> = []
     @State private var notificationGranted: Bool? = nil
@@ -26,55 +26,51 @@ struct OnboardingView: View {
     @State private var animateContent = false
 
     var body: some View {
-        GeometryReader { geo in
-            ZStack {
-                // Background shifts per slide
-                slideBackground
-                    .ignoresSafeArea()
-                    .animation(.easeInOut(duration: 0.6), value: currentSlide)
+        ZStack {
+            // Background shifts subtly per slide
+            slideBackground
+                .ignoresSafeArea()
+                .animation(.easeInOut(duration: 0.6), value: currentSlide)
 
-                VStack(spacing: 0) {
-                    // Progress dots
-                    progressDots
-                        .padding(.top, 60)
-                        .padding(.bottom, 8)
+            VStack(spacing: 0) {
+                // Progress dots
+                progressDots
+                    .padding(.top, 60)
+                    .padding(.bottom, 8)
 
-                    // Slides — laid out in a horizontal row, shifted by currentSlide index
-                    HStack(spacing: 0) {
-                        LanguageSlide(onNext: nextSlide)
-                            .frame(width: geo.size.width)
-                        WelcomeSlide(onNext: nextSlide)
-                            .frame(width: geo.size.width)
-                        NameSlide(nameInput: $nameInput, onNext: nextSlide)
-                            .frame(width: geo.size.width)
-                        TourSlide(onNext: nextSlide)
-                            .frame(width: geo.size.width)
-                        HabitsSlide(selectedHabits: $selectedHabits, onNext: nextSlide)
-                            .frame(width: geo.size.width)
-                        NotificationsSlide(granted: $notificationGranted, onNext: nextSlide)
-                            .frame(width: geo.size.width)
-                        ReadySlide(name: nameInput, onFinish: finish)
-                            .frame(width: geo.size.width)
-                    }
-                    .frame(width: geo.size.width, alignment: .leading)
-                    .offset(x: -CGFloat(currentSlide.rawValue) * geo.size.width)
-                    .animation(.spring(response: 0.5, dampingFraction: 0.85), value: currentSlide)
+                // Slide content
+                TabView(selection: $currentSlide) {
+                    WelcomeSlide(onNext: nextSlide)
+                        .tag(OnboardingSlide.welcome)
+                    NameSlide(nameInput: $nameInput, onNext: nextSlide)
+                        .tag(OnboardingSlide.name)
+                    TourSlide(onNext: nextSlide)
+                        .tag(OnboardingSlide.tour)
+                    HabitsSlide(selectedHabits: $selectedHabits, onNext: nextSlide)
+                        .tag(OnboardingSlide.habits)
+                    NotificationsSlide(granted: $notificationGranted, onNext: nextSlide)
+                        .tag(OnboardingSlide.notifications)
+                    LanguageSlide(onNext: nextSlide)
+                        .tag(OnboardingSlide.language)
+                    ReadySlide(name: nameInput, onFinish: finish)
+                        .tag(OnboardingSlide.ready)
                 }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .animation(.spring(response: 0.5, dampingFraction: 0.82), value: currentSlide)
             }
         }
-        .ignoresSafeArea(.keyboard)
     }
 
     // MARK: - Background gradient per slide
     var slideBackground: some View {
         let colors: [Color] = {
             switch currentSlide {
-            case .language:      return [Color(hex: "0D3A5C"), Color(hex: "1E5F8C")]
             case .welcome:       return [Color(hex: "1A7A6E"), Color(hex: "0D4F47")]
             case .name:          return [Color(hex: "1E5F8C"), Color(hex: "0D3A5C")]
             case .tour:          return [Color(hex: "27AE60"), Color(hex: "145A32")]
             case .habits:        return [Color(hex: "8E44AD"), Color(hex: "4A235A")]
             case .notifications: return [Color(hex: "CA6F1E"), Color(hex: "784212")]
+            case .language:      return [Color(hex: "0D3A5C"), Color(hex: "1E5F8C")]
             case .ready:         return [Color(hex: "1A7A6E"), Color(hex: "0D4F47")]
             }
         }()
@@ -272,7 +268,7 @@ struct NameSlide: View {
                     .padding(.horizontal, 28)
 
                 if !nameInput.isEmpty {
-                    Text("Hi \(nameInput.trimmingCharacters(in: .whitespaces))! We're glad you're here 💚")
+                    Text(String(format: NSLocalizedString("onboarding.name.greeting", comment: ""), nameInput.trimmingCharacters(in: .whitespaces)))
                         .font(.system(size: 14, weight: .medium))
                         .foregroundStyle(.white.opacity(0.85))
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
@@ -465,7 +461,7 @@ struct NotificationsSlide: View {
                 notifFeature(icon: "checkmark.circle", text: "Habit nudges at your chosen time")
 
                 if granted == false {
-                    Text("You can enable notifications later in Settings → Notifications → SymptomTracker")
+                    Text("onboarding.notif.settings")
                         .font(.system(size: 12))
                         .foregroundStyle(.white.opacity(0.6))
                         .multilineTextAlignment(.center)
@@ -495,6 +491,10 @@ struct NotificationsSlide: View {
             DispatchQueue.main.async {
                 requesting = false
                 granted = success
+                if success {
+                    // Schedule the 9pm daily symptom reminder immediately
+                    SymptomReminderScheduler.schedule()
+                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { onNext() }
             }
         }
@@ -580,7 +580,7 @@ struct AppLanguage: Identifiable, Hashable {
         AppLanguage(id: "es",      displayName: "Español",    flag: "🇪🇸"),
         AppLanguage(id: "fr",      displayName: "Français",   flag: "🇫🇷"),
         AppLanguage(id: "zh-Hans", displayName: "简体中文",    flag: "🇨🇳"),
-        AppLanguage(id: "pt-BR",      displayName: "Português",  flag: "🇧🇷"),
+        AppLanguage(id: "pt",      displayName: "Português",  flag: "🇧🇷"),
     ]
 
     /// Best match from the device's preferred language list

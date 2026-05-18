@@ -51,47 +51,53 @@ enum SymptomCategory: String, CaseIterable, Codable {
 // MARK: - Common Symptom
 struct CommonSymptom: Identifiable, Hashable {
     let id = UUID()
-    let name: String
+    let name: String          // localisation key for preloaded; raw text for custom
     let category: SymptomCategory
+
+    /// Display name — localised if a key exists, otherwise raw text (custom symptoms)
+    var localizedName: String {
+        let attempt = NSLocalizedString(name, comment: "")
+        return attempt == name ? name : attempt   // falls back to raw if key not found
+    }
 
     static let preloaded: [CommonSymptom] = [
         // Fatigue
-        CommonSymptom(name: "Tiredness", category: .fatigue),
-        CommonSymptom(name: "Weakness", category: .fatigue),
-        CommonSymptom(name: "Shortness of breath", category: .fatigue),
-        CommonSymptom(name: "Low energy", category: .fatigue),
+        CommonSymptom(name: "symptom.tiredness", category: .fatigue),
+        CommonSymptom(name: "symptom.weakness", category: .fatigue),
+        CommonSymptom(name: "symptom.shortness_of_breath", category: .fatigue),
+        CommonSymptom(name: "symptom.low_energy", category: .fatigue),
 
         // Pain
-        CommonSymptom(name: "Headache", category: .pain),
-        CommonSymptom(name: "Joint pain", category: .pain),
-        CommonSymptom(name: "Muscle aches", category: .pain),
-        CommonSymptom(name: "Chest pain", category: .pain),
-        CommonSymptom(name: "Back pain", category: .pain),
+        CommonSymptom(name: "symptom.headache", category: .pain),
+        CommonSymptom(name: "symptom.joint_pain", category: .pain),
+        CommonSymptom(name: "symptom.muscle_aches", category: .pain),
+        CommonSymptom(name: "symptom.chest_pain", category: .pain),
+        CommonSymptom(name: "symptom.back_pain", category: .pain),
 
         // Nausea
-        CommonSymptom(name: "Nausea", category: .nausea),
-        CommonSymptom(name: "Vomiting", category: .nausea),
-        CommonSymptom(name: "Loss of appetite", category: .nausea),
-        CommonSymptom(name: "Diarrhea", category: .nausea),
-        CommonSymptom(name: "Constipation", category: .nausea),
+        CommonSymptom(name: "symptom.nausea", category: .nausea),
+        CommonSymptom(name: "symptom.vomiting", category: .nausea),
+        CommonSymptom(name: "symptom.loss_of_appetite", category: .nausea),
+        CommonSymptom(name: "symptom.diarrhea", category: .nausea),
+        CommonSymptom(name: "symptom.constipation", category: .nausea),
 
         // Cognitive
-        CommonSymptom(name: "Brain fog", category: .cognitive),
-        CommonSymptom(name: "Memory issues", category: .cognitive),
-        CommonSymptom(name: "Difficulty concentrating", category: .cognitive),
-        CommonSymptom(name: "Confusion", category: .cognitive),
+        CommonSymptom(name: "symptom.brain_fog", category: .cognitive),
+        CommonSymptom(name: "symptom.memory_issues", category: .cognitive),
+        CommonSymptom(name: "symptom.difficulty_concentrating", category: .cognitive),
+        CommonSymptom(name: "symptom.confusion", category: .cognitive),
 
         // Emotional
-        CommonSymptom(name: "Anxiety", category: .emotional),
-        CommonSymptom(name: "Depression", category: .emotional),
-        CommonSymptom(name: "Mood swings", category: .emotional),
-        CommonSymptom(name: "Irritability", category: .emotional),
+        CommonSymptom(name: "symptom.anxiety", category: .emotional),
+        CommonSymptom(name: "symptom.depression", category: .emotional),
+        CommonSymptom(name: "symptom.mood_swings", category: .emotional),
+        CommonSymptom(name: "symptom.irritability", category: .emotional),
 
         // Skin
-        CommonSymptom(name: "Hair loss", category: .skin),
-        CommonSymptom(name: "Dry skin", category: .skin),
-        CommonSymptom(name: "Rash", category: .skin),
-        CommonSymptom(name: "Nail changes", category: .skin),
+        CommonSymptom(name: "symptom.hair_loss", category: .skin),
+        CommonSymptom(name: "symptom.dry_skin", category: .skin),
+        CommonSymptom(name: "symptom.rash", category: .skin),
+        CommonSymptom(name: "symptom.nail_changes", category: .skin),
     ]
 }
 
@@ -137,9 +143,15 @@ class SymptomEntry {
 // MARK: - Individual Symptom with Severity
 struct LoggedSymptom: Codable, Identifiable, Hashable {
     var id: UUID = UUID()
-    var name: String
+    var name: String          // key for preloaded symptoms; raw text for custom
     var category: SymptomCategory
     var severity: Int // 1-10
+
+    /// Display name — localised if a key exists, otherwise the raw stored text
+    var localizedName: String {
+        let attempt = NSLocalizedString(name, comment: "")
+        return attempt == name ? name : attempt
+    }
 
     init(name: String, category: SymptomCategory, severity: Int = 5) {
         self.name = name
