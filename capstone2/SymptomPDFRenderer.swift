@@ -237,8 +237,50 @@ class SymptomPDFRenderer {
     // MARK: - Symptom Table
     func drawSymptomTable() {
         guard !gen.topSymptoms.isEmpty else { return }
-        checkPageBreak(needing: 120)
+
+        // Check if any top symptoms are custom (user-entered, not catalog keys)
+        let hasCustomSymptoms = gen.topSymptoms.contains { gen.isCustomSymptomName($0.name) }
+
+        checkPageBreak(needing: hasCustomSymptoms ? 160 : 120)
         drawSectionTitle(gen.str("pdf.section.symptoms"))
+
+        // Custom symptom disclaimer note
+        if hasCustomSymptoms {
+            let disclaimerText = gen.str("pdf.custom.disclaimer")
+            let disclaimerAttrs: [NSAttributedString.Key: Any] = [
+                .font: UIFont.italicSystemFont(ofSize: 9),
+                .foregroundColor: UIColor(red: 0.5, green: 0.38, blue: 0.0, alpha: 1)
+            ]
+            let disclaimerBoundingWidth = contentWidth - 24
+            let disclaimerHeight = (disclaimerText as NSString).boundingRect(
+                with: CGSize(width: disclaimerBoundingWidth, height: 100),
+                options: .usesLineFragmentOrigin,
+                attributes: disclaimerAttrs, context: nil).height
+            let noteBoxH = disclaimerHeight + 18
+
+            checkPageBreak(needing: noteBoxH + 10)
+
+            // Amber background box
+            let noteRect = CGRect(x: margin, y: currentY, width: contentWidth, height: noteBoxH)
+            UIColor(red: 1.0, green: 0.95, blue: 0.8, alpha: 1).setFill()
+            UIBezierPath(roundedRect: noteRect, cornerRadius: 6).fill()
+            UIColor(red: 0.9, green: 0.7, blue: 0.1, alpha: 0.6).setStroke()
+            let borderPath = UIBezierPath(roundedRect: noteRect, cornerRadius: 6)
+            borderPath.lineWidth = 0.75
+            borderPath.stroke()
+
+            // Left accent
+            UIColor(red: 0.9, green: 0.7, blue: 0.1, alpha: 1).setFill()
+            UIBezierPath(roundedRect: CGRect(x: margin, y: currentY, width: 3, height: noteBoxH),
+                         cornerRadius: 1.5).fill()
+
+            (disclaimerText as NSString).draw(
+                in: CGRect(x: margin + 12, y: currentY + 9,
+                           width: disclaimerBoundingWidth, height: disclaimerHeight + 4),
+                withAttributes: disclaimerAttrs)
+
+            currentY += noteBoxH + 10
+        }
 
         // Table header
         let cols: [(String, CGFloat)] = [
@@ -298,7 +340,7 @@ class SymptomPDFRenderer {
                 .foregroundColor: grayText
             ]
 
-            let trendColor = stat.trend == "Worsening" ? red : stat.trend == "Improving" ? green : grayText
+            let trendColor = stat.trend == gen.str("pdf.trend.worsening") ? red : stat.trend == gen.str("pdf.trend.improving") ? green : grayText
             let trendAttrs: [NSAttributedString.Key: Any] = [
                 .font: UIFont.systemFont(ofSize: 10, weight: .semibold),
                 .foregroundColor: trendColor
@@ -314,7 +356,7 @@ class SymptomPDFRenderer {
 
             let values: [(String, [NSAttributedString.Key: Any], CGFloat)] = [
                 (gen.resolveSymptomName(stat.name), cellAttrs, contentWidth * 0.32),
-                (stat.category.rawValue,         smallAttrs, contentWidth * 0.20),
+                (gen.localizedCategory(stat.category), smallAttrs, contentWidth * 0.20),
                 ("\(stat.occurrences)x",         smallAttrs, contentWidth * 0.10),
                 (String(format: "%.1f", stat.avgSeverity), sevAttrs, contentWidth * 0.13),
                 ("\(stat.maxSeverity)/10",       smallAttrs, contentWidth * 0.13),
@@ -416,7 +458,7 @@ class SymptomPDFRenderer {
                 .font: UIFont.systemFont(ofSize: 10, weight: .medium),
                 .foregroundColor: UIColor(red: 0.5, green: 0.1, blue: 0.1, alpha: 1)
             ]
-            let calloutText = "Note: \(elevated.label) was most elevated this week (avg \(String(format: "%.1f", elevated.score))/10). Consider discussing with your care team."
+            let calloutText = String(format: gen.str("pdf.emotional.note"), elevated.label, elevated.score)
             (calloutText as NSString).draw(
                 in: CGRect(x: margin + 12, y: currentY + 8, width: contentWidth - 24, height: 30),
                 withAttributes: calloutAttrs)
@@ -432,7 +474,9 @@ class SymptomPDFRenderer {
         checkPageBreak(needing: 80)
         drawSectionTitle(gen.str("pdf.section.daily"))
 
-        let df = DateFormatter(); df.dateFormat = "EEE, MMM d"
+        let df = DateFormatter()
+        df.locale = gen.pdfLocale
+        df.dateFormat = "EEE, MMM d"
 
         for snap in gen.dailySnapshots {
             let entryHeight: CGFloat = snap.symptoms.isEmpty ? 52 : CGFloat(52 + snap.symptoms.count * 18 + (snap.notes.isEmpty ? 0 : 22))
@@ -495,7 +539,9 @@ class SymptomPDFRenderer {
                         .font: UIFont.systemFont(ofSize: 11),
                         .foregroundColor: darkText
                     ]
-                    (gen.resolveSymptomName(symptom.name) as NSString).draw(at: CGPoint(x: margin + 22, y: currentY + 3),
+                    let displayName = gen.resolveSymptomName(symptom.name)
+                    let markedName = gen.isCustomSymptomName(symptom.name) ? "\(displayName) †" : displayName
+                    (markedName as NSString).draw(at: CGPoint(x: margin + 22, y: currentY + 3),
                                                     withAttributes: symAttrs)
 
                     // Severity bar

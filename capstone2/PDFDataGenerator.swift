@@ -1,3 +1,4 @@
+
 import Foundation
 import SwiftUI
 
@@ -54,6 +55,37 @@ class PDFDataGenerator {
         return catalogAttempt.isEmpty ? name : catalogAttempt
     }
 
+    /// Returns true if the symptom name is user-entered (not a preloaded catalog key).
+    /// Preloaded keys always resolve to a different localized string; custom names return themselves.
+    func isCustomSymptomName(_ name: String) -> Bool {
+        let catalogAttempt = pdfBundle.localizedString(forKey: name, value: "", table: nil)
+        return catalogAttempt.isEmpty
+    }
+
+    /// The Locale matching the chosen PDF language, derived from the bundle path.
+    /// Used to format dates and numbers in the correct language/region.
+    var pdfLocale: Locale {
+        // bundlePath ends in e.g. ".../en.lproj" or ".../zh-Hans.lproj"
+        let lastComponent = (pdfBundle.bundlePath as NSString).lastPathComponent
+        let identifier = (lastComponent as NSString).deletingPathExtension
+        return identifier.isEmpty ? .current : Locale(identifier: identifier)
+    }
+
+    /// Returns the localized category name in the PDF language.
+    func localizedCategory(_ category: SymptomCategory) -> String {
+        let key: String
+        switch category {
+        case .fatigue:   key = "category.fatigue"
+        case .pain:      key = "category.pain"
+        case .nausea:    key = "category.nausea"
+        case .cognitive: key = "category.cognitive"
+        case .emotional: key = "category.emotional"
+        case .skin:      key = "category.skin"
+        case .other:     key = "category.other"
+        }
+        return pdfBundle.localizedString(forKey: key, value: category.rawValue, table: nil)
+    }
+
     // MARK: - Stats
     var symptomStats: [SymptomStat] {
         var map: [String: (SymptomCategory, [Int])] = [:]
@@ -75,7 +107,7 @@ class PDFDataGenerator {
                 let last  = Double(severities.suffix(half).reduce(0, +)) / Double(half)
                 if last > first + 0.5      { trend = str("pdf.trend.worsening") }
                 else if last < first - 0.5 { trend = str("pdf.trend.improving") }
-                else                       { trend = NSLocalizedString("pdf.trend.stable",    comment: "") }
+                else                       { trend = str("pdf.trend.stable") }
             } else { trend = str("pdf.trend.stable") }
             return SymptomStat(name: name, category: data.0,
                                occurrences: severities.count, avgSeverity: avg,
