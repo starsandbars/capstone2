@@ -152,6 +152,7 @@ class HabitViewModel {
 
     var todayFormatted: String {
         let f = DateFormatter()
+        f.locale = Locale(identifier: UserDefaults.standard.string(forKey: "selectedLanguage") ?? Locale.current.identifier)
         f.dateFormat = "EEEE, MMMM d"
         return f.string(from: Date())
     }

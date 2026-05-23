@@ -191,6 +191,7 @@ class Habit {
     var last7DayLabels: [String] {
         let calendar = Calendar.current
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: UserDefaults.standard.string(forKey: "selectedLanguage") ?? Locale.current.identifier)
         formatter.dateFormat = "EEE"
         return (0..<7).reversed().map { offset -> String in
             guard let date = calendar.date(byAdding: .day, value: -offset, to: Date()) else { return "" }

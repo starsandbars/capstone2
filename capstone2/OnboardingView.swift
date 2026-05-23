@@ -194,18 +194,18 @@ struct WelcomeSlide: View {
     var body: some View {
         SlideScaffold(
             emoji: "🌱",
-            title: "Welcome to\nYour Recovery",
-            subtitle: "This app is your gentle companion through cancer recovery — tracking how you feel, building small habits, and keeping your care team informed.",
-            buttonLabel: "Let's get started",
+            title: NSLocalizedString("onboarding.welcome.title", comment: ""),
+            subtitle: NSLocalizedString("onboarding.welcome.subtitle", comment: ""),
+            buttonLabel: NSLocalizedString("onboarding.welcome.button", comment: ""),
             buttonEnabled: true,
             onButton: onNext
         ) {
             // Feature pills
             VStack(spacing: 10) {
-                featurePill(icon: "note.text",          text: "Log symptoms daily")
-                featurePill(icon: "checkmark.circle",   text: "Build healthy habits")
-                featurePill(icon: "chart.bar.fill",     text: "Track your progress")
-                featurePill(icon: "doc.richtext",       text: "Share reports with your doctor")
+                featurePill(icon: "note.text",          text: NSLocalizedString("onboarding.welcome.f1", comment: ""))
+                featurePill(icon: "checkmark.circle",   text: NSLocalizedString("onboarding.welcome.f2", comment: ""))
+                featurePill(icon: "chart.bar.fill",     text: NSLocalizedString("onboarding.welcome.f3", comment: ""))
+                featurePill(icon: "doc.richtext",       text: NSLocalizedString("onboarding.welcome.f4", comment: ""))
             }
             .padding(.horizontal, 28)
             .opacity(appeared ? 1 : 0)
@@ -247,14 +247,14 @@ struct NameSlide: View {
     var body: some View {
         SlideScaffold(
             emoji: "👋",
-            title: "What should\nwe call you?",
-            subtitle: "Your name will appear on exported reports to share with your care team. You can skip this if you prefer.",
-            buttonLabel: nameInput.trimmingCharacters(in: .whitespaces).isEmpty ? "Skip for now" : "Continue",
+            title: NSLocalizedString("onboarding.name.title", comment: ""),
+            subtitle: NSLocalizedString("onboarding.name.subtitle", comment: ""),
+            buttonLabel: nameInput.trimmingCharacters(in: .whitespaces).isEmpty ? NSLocalizedString("onboarding.name.skip", comment: "") : NSLocalizedString("onboarding.name.continue", comment: ""),
             buttonEnabled: true,
             onButton: onNext
         ) {
             VStack(spacing: 16) {
-                TextField("Your first name…", text: $nameInput)
+                TextField(NSLocalizedString("onboarding.name.placeholder", comment: ""), text: $nameInput)
                     .font(.system(size: 20, weight: .medium))
                     .foregroundStyle(Color(hex: "1A7A6E"))
                     .multilineTextAlignment(.center)
@@ -288,17 +288,17 @@ struct TourSlide: View {
     @State private var appeared = false
 
     let tabs: [(String, String, String, String)] = [
-        ("house.fill",              "Home",    "accentTeal",      "Weekly summaries, symptom trends, and your mood over time."),
-        ("note.text",               "Log",     "1E5F8C",          "Log your symptoms and mental wellbeing each day."),
-        ("checkmark.circle.fill",   "Habits",  "27AE60",          "Build small daily habits and track your streaks."),
+        ("house.fill",              NSLocalizedString("onboarding.tour.home.title", comment: ""),    "accentTeal",      NSLocalizedString("onboarding.tour.home.desc", comment: "")),
+        ("note.text",               NSLocalizedString("onboarding.tour.log.title", comment: ""),     "1E5F8C",          NSLocalizedString("onboarding.tour.log.desc", comment: "")),
+        ("checkmark.circle.fill",   NSLocalizedString("onboarding.tour.habits.title", comment: ""),  "27AE60",          NSLocalizedString("onboarding.tour.habits.desc", comment: "")),
     ]
 
     var body: some View {
         SlideScaffold(
             emoji: "🗺️",
-            title: "Here's what's\ninside",
-            subtitle: "Three simple sections — everything you need, nothing you don't.",
-            buttonLabel: "Got it!",
+            title: NSLocalizedString("onboarding.tour.title", comment: ""),
+            subtitle: NSLocalizedString("onboarding.tour.subtitle", comment: ""),
+            buttonLabel: NSLocalizedString("onboarding.tour.button", comment: ""),
             buttonEnabled: true,
             onButton: onNext
         ) {
@@ -354,9 +354,9 @@ struct HabitsSlide: View {
     var body: some View {
         SlideScaffold(
             emoji: "✨",
-            title: "Pick a few\nhabits to start",
-            subtitle: "Small steps make a big difference. Choose the ones that feel right for you today — you can always add more later.",
-            buttonLabel: selectedHabits.isEmpty ? "Skip for now" : "Add \(selectedHabits.count) habit\(selectedHabits.count == 1 ? "" : "s")",
+            title: NSLocalizedString("onboarding.habits.title", comment: ""),
+            subtitle: NSLocalizedString("onboarding.habits.subtitle", comment: ""),
+            buttonLabel: selectedHabits.isEmpty ? NSLocalizedString("onboarding.habits.button.skip", comment: "") : selectedHabits.count == 1 ? NSLocalizedString("onboarding.habits.button.add.one", comment: "") : String(format: NSLocalizedString("onboarding.habits.button.add.many", comment: ""), selectedHabits.count),
             buttonEnabled: true,
             onButton: onNext
         ) {
@@ -449,16 +449,16 @@ struct NotificationsSlide: View {
     var body: some View {
         SlideScaffold(
             emoji: "🔔",
-            title: "Stay gently\nreminded",
-            subtitle: "Allow notifications so we can remind you to log symptoms, take medications, and complete your daily habits.",
+            title: NSLocalizedString("onboarding.notif.title", comment: ""),
+            subtitle: NSLocalizedString("onboarding.notif.subtitle", comment: ""),
             buttonLabel: buttonLabel,
             buttonEnabled: !requesting,
             onButton: handleButton
         ) {
             VStack(spacing: 14) {
-                notifFeature(icon: "note.text",        text: "Daily symptom check-in reminder")
-                notifFeature(icon: "pills.fill",       text: "Medication reminders")
-                notifFeature(icon: "checkmark.circle", text: "Habit nudges at your chosen time")
+                notifFeature(icon: "note.text",        text: NSLocalizedString("onboarding.notif.f1", comment: ""))
+                notifFeature(icon: "pills.fill",       text: NSLocalizedString("onboarding.notif.f2", comment: ""))
+                notifFeature(icon: "checkmark.circle", text: NSLocalizedString("onboarding.notif.f3", comment: ""))
 
                 if granted == false {
                     Text("onboarding.notif.settings")
@@ -476,9 +476,9 @@ struct NotificationsSlide: View {
 
     var buttonLabel: String {
         switch granted {
-        case .none:  return requesting ? "Requesting…" : "Allow notifications"
-        case .some(true):  return "Notifications enabled ✓"
-        case .some(false): return "Continue without notifications"
+        case .none:  return requesting ? NSLocalizedString("onboarding.notif.button.requesting", comment: "") : NSLocalizedString("onboarding.notif.button.allow", comment: "")
+        case .some(true):  return NSLocalizedString("onboarding.notif.button.enabled", comment: "")
+        case .some(false): return NSLocalizedString("onboarding.notif.button.without", comment: "")
         }
     }
 
@@ -528,22 +528,22 @@ struct ReadySlide: View {
 
     var greeting: String {
         let trimmed = name.trimmingCharacters(in: .whitespaces)
-        return trimmed.isEmpty ? "You're all set" : "You're all set, \(trimmed)"
+        return trimmed.isEmpty ? NSLocalizedString("onboarding.ready.greeting", comment: "") : String(format: NSLocalizedString("onboarding.ready.greeting.named", comment: ""), trimmed)
     }
 
     var body: some View {
         SlideScaffold(
             emoji: "💚",
             title: greeting,
-            subtitle: "Recovery takes courage. We're here to help you take it one gentle day at a time.",
-            buttonLabel: "Open the app",
+            subtitle: NSLocalizedString("onboarding.ready.title", comment: ""),
+            buttonLabel: NSLocalizedString("onboarding.ready.button", comment: ""),
             buttonEnabled: true,
             onButton: onFinish
         ) {
             VStack(spacing: 16) {
-                affirmation("Every step forward counts, no matter how small.")
-                affirmation("You don't have to have it all figured out today.")
-                affirmation("This app is here for you — at your own pace.")
+                affirmation(NSLocalizedString("onboarding.ready.a1", comment: ""))
+                affirmation(NSLocalizedString("onboarding.ready.a2", comment: ""))
+                affirmation(NSLocalizedString("onboarding.ready.a3", comment: ""))
             }
             .padding(.horizontal, 28)
             .opacity(appeared ? 1 : 0)
@@ -580,13 +580,14 @@ struct AppLanguage: Identifiable, Hashable {
         AppLanguage(id: "es",      displayName: "Español",    flag: "🇪🇸"),
         AppLanguage(id: "fr",      displayName: "Français",   flag: "🇫🇷"),
         AppLanguage(id: "zh-Hans", displayName: "简体中文",    flag: "🇨🇳"),
-        AppLanguage(id: "pt",      displayName: "Português",  flag: "🇧🇷"),
+        AppLanguage(id: "pt-BR",   displayName: "Português",  flag: "🇧🇷"),
     ]
 
     /// Best match from the device's preferred language list
     static var systemMatch: AppLanguage {
         for lang in Locale.preferredLanguages {
             if lang.hasPrefix("zh") { return all.first { $0.id == "zh-Hans" }! }
+            if lang.hasPrefix("pt") { return all.first { $0.id == "pt-BR" }! }
             let code = String(lang.prefix(2))
             if let match = all.first(where: { $0.id == code }) { return match }
         }
@@ -604,8 +605,8 @@ struct LanguageSlide: View {
         SlideScaffold(
             emoji: "🌍",
             title: "Choose your\nlanguage",
-            subtitle: "Choisissez · Elija · 选择语言 · Escolha",
-            buttonLabel: "Continue",
+            subtitle: NSLocalizedString("onboarding.language.subtitle", comment: ""),
+            buttonLabel: NSLocalizedString("onboarding.name.continue", comment: ""),
             buttonEnabled: true,
             onButton: {
                 selectedLanguage = selected.id

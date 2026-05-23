@@ -25,7 +25,7 @@ struct WorriedSymptom {
         let pct = percentIncrease
         if pct > 0 { return String(format: "+%.0f%%", pct) }
         if pct < 0 { return String(format: "%.0f%%", pct) }
-        return "Unchanged"
+        return NSLocalizedString("home.trend.unchanged", comment: "")
     }
 
     var isWorsening: Bool { percentIncrease > 0 }
@@ -162,6 +162,7 @@ struct WeeklySummary {
 
     var weekLabel: String {
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: UserDefaults.standard.string(forKey: "selectedLanguage") ?? Locale.current.identifier)
         formatter.dateFormat = "MMM d"
         return "\(formatter.string(from: weekStart)) – \(formatter.string(from: weekEnd))"
     }
@@ -266,6 +267,7 @@ class HomeViewModel {
 extension Calendar {
     func shortDayLetter(for date: Date) -> String {
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: UserDefaults.standard.string(forKey: "selectedLanguage") ?? Locale.current.identifier)
         formatter.dateFormat = "EEE"
         return String(formatter.string(from: date).prefix(1))
     }

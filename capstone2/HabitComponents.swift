@@ -476,8 +476,8 @@ struct HabitDetailSheet: View {
 
                     // Stats row
                     HStack(spacing: 12) {
-                        statCard(value: "\(habit.currentStreak)", label: "Streak", icon: "🔥")
-                        statCard(value: "\(habit.totalCompletions)", label: "Total done", icon: "✅")
+                        statCard(value: "\(habit.currentStreak)", label: NSLocalizedString("habit.detail.streak", comment: ""), icon: "🔥")
+                        statCard(value: "\(habit.totalCompletions)", label: NSLocalizedString("habit.detail.totaldone", comment: ""), icon: "✅")
                     }
 
                     // 7-day history

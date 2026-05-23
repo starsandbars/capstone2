@@ -1,4 +1,3 @@
-
 import Foundation
 import SwiftUI
 
@@ -179,13 +178,13 @@ class PDFDataGenerator {
 
     var dateRangeLabel: String {
         guard let first = entries.first?.date, let last = entries.last?.date else { return "No data" }
-        let f = DateFormatter(); f.dateFormat = "MMM d, yyyy"
+        let f = DateFormatter(); f.locale = pdfLocale; f.dateFormat = "MMM d, yyyy"
         if Calendar.current.isDate(first, inSameDayAs: last) { return f.string(from: first) }
         return "\(f.string(from: first)) - \(f.string(from: last))"
     }
 
     var generatedLabel: String {
-        let f = DateFormatter(); f.dateFormat = "MMMM d, yyyy 'at' h:mm a"
+        let f = DateFormatter(); f.locale = pdfLocale; f.dateFormat = "MMMM d, yyyy 'at' h:mm a"
         return f.string(from: generatedAt)
     }
 

@@ -23,6 +23,7 @@ class SymptomLogViewModel {
     // MARK: - Today's date string
     var todayFormatted: String {
         let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: UserDefaults.standard.string(forKey: "selectedLanguage") ?? Locale.current.identifier)
         formatter.dateFormat = "EEEE, MMMM d"
         return formatter.string(from: Date())
     }

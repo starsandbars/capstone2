@@ -61,9 +61,13 @@ struct PDFExportView: View {
     }
 
     var pdfBundle: Bundle {
-        guard let path = Bundle.main.path(forResource: selectedLanguage.id, ofType: "lproj"),
-              let bundle = Bundle(path: path) else { return .main }
-        return bundle
+        let baseLang = String(selectedLanguage.id.prefix(2))
+        let candidates = selectedLanguage.id == baseLang ? [selectedLanguage.id] : [selectedLanguage.id, baseLang]
+        for candidate in candidates {
+            if let path = Bundle.main.path(forResource: candidate, ofType: "lproj"),
+               let bundle = Bundle(path: path) { return bundle }
+        }
+        return .main
     }
 
     var body: some View {
@@ -270,7 +274,7 @@ struct PDFExportView: View {
                 previewRow(icon: "exclamationmark.triangle.fill",
                            iconColor: Color("severityHigh"),
                            title: NSLocalizedString("pdf.export.concerning", comment: ""),
-                           value: "\(NSLocalizedString(top.name, comment: top.name)) — avg \(String(format: "%.1f", top.avgSeverity))/10")
+                           value: "\(generator.resolveSymptomName(top.name)) · \(String(format: "%.1f", top.avgSeverity))/10")
             }
 
             previewRow(icon: "heart.fill",
