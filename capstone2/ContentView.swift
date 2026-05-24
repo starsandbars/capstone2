@@ -4,7 +4,7 @@ struct ContentView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("selectedLanguage") private var selectedLanguage = ""
 
-    /// The active locale — uses stored preference if set, otherwise system default.
+    /// Computed property generating a standard Locale struct matched to choice patterns
     var locale: Locale {
         selectedLanguage.isEmpty ? .current : Locale(identifier: selectedLanguage)
     }
@@ -19,6 +19,10 @@ struct ContentView: View {
             }
         }
         .environment(\.locale, locale)
+        // 🍏 FIX: Attaching the ID pattern here forces SwiftUI to safely dismantle
+        // internal navigation element hierarchies and recompute text metrics across
+        // headers and tabs instantly whenever the selected language changes.
+        .id(selectedLanguage)
     }
 }
 
