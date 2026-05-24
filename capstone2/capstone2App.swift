@@ -2,79 +2,88 @@ import SwiftUI
 import SwiftData
 import UserNotifications
 
-// MARK: - In-app language bundle override
-/// Computed variable ensures lookups dynamically pull the latest chosen language bundle.
-private var _languageOverrideBundle: Bundle? {
-    let saved = UserDefaults.standard.string(forKey: "selectedLanguage") ?? ""
-    return languageBundleFor(saved)
-}
-
-/// Returns the .lproj Bundle for the given language ID, or nil for English / empty.
-private func languageBundleFor(_ identifier: String) -> Bundle? {
-    guard !identifier.isEmpty, !identifier.hasPrefix("en") else { return nil }
-    let base = String(identifier.prefix(2))
-    for candidate in (identifier == base ? [identifier] : [identifier, base]) {
-        if let path = Bundle.main.path(forResource: candidate, ofType: "lproj"),
-           let bundle = Bundle(path: path) {
-            return bundle
-        }
-    }
-    return nil
-}
-
-/// Subclass that reads from the user-chosen lproj bundle dynamically.
-final class LanguageBundle: Bundle, @unchecked Sendable {
-    override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
-        if let overrideBundle = _languageOverrideBundle {
-            return overrideBundle.localizedString(forKey: key, value: value, table: tableName)
-        }
-        return super.localizedString(forKey: key, value: value, table: tableName)
-    }
-}
-
-extension Bundle {
-    private static let once: Void = {
-        object_setClass(Bundle.main, LanguageBundle.self)
-    }()
-    
-    static func setLanguage(_ identifier: String) {
-        _ = Bundle.once
-        UserDefaults.standard.set(identifier, forKey: "selectedLanguage")
-    }
-}
-
 @main
 struct capstone2App: App {
+    @AppStorage("selectedLanguage") private var selectedLanguage = ""
+
     init() {
-        // Initialize dynamic language switching hook on application boot
-        let savedLanguage = UserDefaults.standard.string(forKey: "selectedLanguage") ?? ""
-        Bundle.setLanguage(savedLanguage)
+        // Apply the saved language before any view or string loads.
+        // Called unconditionally so AppleLanguages is always in a known state,
+        // even if a prior session set it to a different language.
+        capstone2App.applyLanguage(
+            UserDefaults.standard.string(forKey: "selectedLanguage") ?? ""
+        )
+        UNUserNotificationCenter.current().delegate = NotificationDelegate.shared
+        SymptomReminderScheduler.scheduleIfAuthorized()
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onChange(of: selectedLanguage) { _, newValue in
+                    // Persist for next cold launch.
+                    // NSBundle caches its language on first string access per process,
+                    // so NSLocalizedString fully switches on the next cold launch.
+                    // SwiftUI Text() switches immediately via ContentView's .environment locale.
+                    capstone2App.applyLanguage(newValue)
+                }
         }
-        .modelContainer(for: SymptomEntry.self)
+        .modelContainer(for: [SymptomEntry.self, Habit.self])
+    }
+
+    /// Writes UserDefaults["AppleLanguages"] so that NSLocalizedString uses the
+    /// correct .lproj on every launch, regardless of the device system language.
+    ///
+    /// Using AppleLanguages is the native iOS mechanism — it works with xcstrings
+    /// at the OS level without any bundle subclassing or method interception.
+    ///
+    /// - Empty string: clear override — fall back to system language (not yet chosen).
+    /// - "en": pin to ["en"] explicitly so NSLocalizedString is not affected by the
+    ///   device system language, even if the device is set to something else.
+    /// - All others: set [identifier, base, "en"], e.g. ["pt-BR", "pt", "en"],
+    ///   covering both full and base lproj names with English as the final fallback.
+    static func applyLanguage(_ identifier: String) {
+        if identifier.isEmpty {
+            UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+        } else if identifier.hasPrefix("en") {
+            UserDefaults.standard.set(["en"], forKey: "AppleLanguages")
+        } else {
+            let base = String(identifier.prefix(2))
+            let langs: [String] = (identifier == base)
+                ? [identifier, "en"]
+                : [identifier, base, "en"]
+            UserDefaults.standard.set(langs, forKey: "AppleLanguages")
+        }
     }
 }
 
-// MARK: - Notification Scheduler
-struct SymptomReminderScheduler {
-    static let notificationID = "daily_symptom_reminder"
+// MARK: - Notification Delegate
+// Shows notifications as banners even when the app is in the foreground.
+class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
+    static let shared = NotificationDelegate()
 
-    static func requestAndSchedule() {
-        let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            guard granted else { return }
-            center.getNotificationSettings { settings in
-                guard settings.authorizationStatus == .authorized ||
-                      settings.authorizationStatus == .provisional else { return }
-                UNUserNotificationCenter.current().getPendingNotificationRequests { pending in
-                    let alreadyScheduled = pending.contains { $0.identifier == notificationID }
-                    guard !alreadyScheduled else { return }
-                    schedule()
-                }
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound, .badge])
+    }
+}
+
+// MARK: - Symptom Reminder Scheduler
+struct SymptomReminderScheduler {
+    static let notificationID = "daily.symptom.checkin"
+
+    /// Schedules the daily reminder only if permission is already granted.
+    /// Call this on every launch — it is a no-op if already scheduled.
+    static func scheduleIfAuthorized() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            guard settings.authorizationStatus == .authorized ||
+                  settings.authorizationStatus == .provisional else { return }
+            UNUserNotificationCenter.current().getPendingNotificationRequests { pending in
+                guard !pending.contains(where: { $0.identifier == notificationID }) else { return }
+                schedule()
             }
         }
     }
@@ -85,22 +94,20 @@ struct SymptomReminderScheduler {
         content.body  = NSLocalizedString("notif.symptom.body",  comment: "")
         content.sound = .default
         content.badge = 1
-
-        var dateComponents = DateComponents()
-        dateComponents.hour   = 21
-        dateComponents.minute = 0
-
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-        let request = UNNotificationRequest(identifier: notificationID, content: content, trigger: trigger)
-        
+        var dc = DateComponents()
+        dc.hour = 21; dc.minute = 0
+        let request = UNNotificationRequest(
+            identifier: notificationID,
+            content: content,
+            trigger: UNCalendarNotificationTrigger(dateMatching: dc, repeats: true)
+        )
         UNUserNotificationCenter.current().add(request) { error in
-            if let error {
-                print("Symptom reminder scheduling failed: \(error.localizedDescription)")
-            }
+            if let error { print("Reminder scheduling failed: \(error)") }
         }
     }
 
     static func cancel() {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationID])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(
+            withIdentifiers: [notificationID])
     }
 }
