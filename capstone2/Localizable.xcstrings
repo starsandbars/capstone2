@@ -6595,7 +6595,6 @@
       }
     },
     "onboarding.language.title" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

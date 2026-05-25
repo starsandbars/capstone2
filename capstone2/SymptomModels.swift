@@ -60,7 +60,8 @@ struct CommonSymptom: Identifiable, Hashable {
         return attempt == name ? name : attempt   // falls back to raw if key not found
     }
 
-    static let preloaded: [CommonSymptom] = [
+    static var preloaded: [CommonSymptom] {
+        return [
         // Fatigue
         CommonSymptom(name: "symptom.tiredness", category: .fatigue),
         CommonSymptom(name: "symptom.weakness", category: .fatigue),
@@ -98,7 +99,8 @@ struct CommonSymptom: Identifiable, Hashable {
         CommonSymptom(name: "symptom.dry_skin", category: .skin),
         CommonSymptom(name: "symptom.rash", category: .skin),
         CommonSymptom(name: "symptom.nail_changes", category: .skin),
-    ]
+        ]
+    }
 }
 
 // MARK: - Logged Symptom Entry

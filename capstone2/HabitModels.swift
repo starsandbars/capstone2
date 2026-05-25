@@ -209,7 +209,8 @@ struct SuggestedHabit: Identifiable {
     let frequency: HabitFrequency
     let emoji: String
 
-    static let all: [SuggestedHabit] = [
+    static var all: [SuggestedHabit] {
+        return [
         SuggestedHabit(title: NSLocalizedString("suggestion.walk.title",     comment: ""), description: NSLocalizedString("suggestion.walk.desc",     comment: ""), category: .movement,    frequency: .daily,  emoji: "🚶"),
         SuggestedHabit(title: NSLocalizedString("suggestion.stretch.title",  comment: ""), description: NSLocalizedString("suggestion.stretch.desc",  comment: ""), category: .movement,    frequency: .daily,  emoji: "🧘"),
         SuggestedHabit(title: NSLocalizedString("suggestion.yoga.title",     comment: ""), description: NSLocalizedString("suggestion.yoga.desc",     comment: ""), category: .movement,    frequency: .daily,  emoji: "🪑"),
@@ -225,5 +226,6 @@ struct SuggestedHabit: Identifiable {
         SuggestedHabit(title: NSLocalizedString("suggestion.rest.title",     comment: ""), description: NSLocalizedString("suggestion.rest.desc",     comment: ""), category: .rest,        frequency: .daily,  emoji: "😴"),
         SuggestedHabit(title: NSLocalizedString("suggestion.meds.title",     comment: ""), description: NSLocalizedString("suggestion.meds.desc",     comment: ""), category: .medical,     frequency: .daily,  emoji: "💊"),
         SuggestedHabit(title: NSLocalizedString("suggestion.checkin.title",  comment: ""), description: NSLocalizedString("suggestion.checkin.desc",  comment: ""), category: .medical,     frequency: .daily,  emoji: "🔍"),
-    ]
+        ]
+    }
 }

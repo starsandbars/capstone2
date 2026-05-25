@@ -287,11 +287,11 @@ struct TourSlide: View {
     let onNext: () -> Void
     @State private var appeared = false
 
-    let tabs: [(String, String, String, String)] = [
+    var tabs: [(String, String, String, String)] {[
         ("house.fill",              NSLocalizedString("onboarding.tour.home.title", comment: ""),    "accentTeal",      NSLocalizedString("onboarding.tour.home.desc", comment: "")),
         ("note.text",               NSLocalizedString("onboarding.tour.log.title", comment: ""),     "1E5F8C",          NSLocalizedString("onboarding.tour.log.desc", comment: "")),
         ("checkmark.circle.fill",   NSLocalizedString("onboarding.tour.habits.title", comment: ""),  "27AE60",          NSLocalizedString("onboarding.tour.habits.desc", comment: "")),
-    ]
+    ]}
 
     var body: some View {
         SlideScaffold(
@@ -349,7 +349,7 @@ struct HabitsSlide: View {
     let onNext: () -> Void
 
     // Show a curated short list — 6 habits
-    let featured: [SuggestedHabit] = Array(SuggestedHabit.all.prefix(6))
+    var featured: [SuggestedHabit] { Array(SuggestedHabit.all.prefix(6)) }
 
     var body: some View {
         SlideScaffold(
@@ -604,7 +604,7 @@ struct LanguageSlide: View {
     var body: some View {
         SlideScaffold(
             emoji: "🌍",
-            title: "Choose your\nlanguage",
+            title: NSLocalizedString("onboarding.language.title", comment: ""),
             subtitle: NSLocalizedString("onboarding.language.subtitle", comment: ""),
             buttonLabel: NSLocalizedString("onboarding.name.continue", comment: ""),
             buttonEnabled: true,
