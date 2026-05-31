@@ -20,7 +20,7 @@ struct OnboardingView: View {
 
     @State private var currentSlide: OnboardingSlide = .welcome
     @State private var nameInput = ""
-    @State private var selectedHabits: Set<UUID> = []
+    @State private var selectedHabits: Set<String> = []
     @State private var notificationGranted: Bool? = nil
     @State private var slideOffset: CGFloat = 0
     @State private var animateContent = false
@@ -38,25 +38,33 @@ struct OnboardingView: View {
                     .padding(.top, 60)
                     .padding(.bottom, 8)
 
-                // Slide content
-                TabView(selection: $currentSlide) {
-                    WelcomeSlide(onNext: nextSlide)
-                        .tag(OnboardingSlide.welcome)
-                    NameSlide(nameInput: $nameInput, onNext: nextSlide)
-                        .tag(OnboardingSlide.name)
-                    TourSlide(onNext: nextSlide)
-                        .tag(OnboardingSlide.tour)
-                    HabitsSlide(selectedHabits: $selectedHabits, onNext: nextSlide)
-                        .tag(OnboardingSlide.habits)
-                    NotificationsSlide(granted: $notificationGranted, onNext: nextSlide)
-                        .tag(OnboardingSlide.notifications)
-                    LanguageSlide(onNext: nextSlide)
-                        .tag(OnboardingSlide.language)
-                    ReadySlide(name: nameInput, onFinish: finish)
-                        .tag(OnboardingSlide.ready)
+                // Slide content — ZStack driven only by button taps; no swipe gesture.
+                ZStack {
+                    switch currentSlide {
+                    case .welcome:
+                        WelcomeSlide(onNext: nextSlide)
+                            .transition(slideTransition)
+                    case .name:
+                        NameSlide(nameInput: $nameInput, onNext: nextSlide)
+                            .transition(slideTransition)
+                    case .tour:
+                        TourSlide(onNext: nextSlide)
+                            .transition(slideTransition)
+                    case .habits:
+                        HabitsSlide(selectedHabits: $selectedHabits, onNext: nextSlide)
+                            .transition(slideTransition)
+                    case .notifications:
+                        NotificationsSlide(granted: $notificationGranted, onNext: nextSlide)
+                            .transition(slideTransition)
+                    case .language:
+                        LanguageSlide(onNext: nextSlide)
+                            .transition(slideTransition)
+                    case .ready:
+                        ReadySlide(name: nameInput, onFinish: finish)
+                            .transition(slideTransition)
+                    }
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.spring(response: 0.5, dampingFraction: 0.82), value: currentSlide)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
     }
@@ -75,6 +83,14 @@ struct OnboardingView: View {
             }
         }()
         return LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+
+    // MARK: - Slide transition (leading edge — always left-to-right forward)
+    var slideTransition: AnyTransition {
+        .asymmetric(
+            insertion: .move(edge: .trailing),
+            removal:   .move(edge: .leading)
+        )
     }
 
     // MARK: - Progress dots
@@ -345,7 +361,7 @@ struct TourSlide: View {
 
 // MARK: - Slide 4: Habits
 struct HabitsSlide: View {
-    @Binding var selectedHabits: Set<UUID>
+    @Binding var selectedHabits: Set<String>
     let onNext: () -> Void
 
     // Show a curated short list — 6 habits
