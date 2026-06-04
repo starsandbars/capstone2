@@ -13,16 +13,17 @@ struct ContentView: View {
         Group {
             if hasCompletedOnboarding {
                 MainTabView()
+                    // Forces SwiftUI to rebuild MainTabView when language changes,
+                    // refreshing all localized strings and text metrics instantly.
+                    // Only applied post-onboarding — attaching this during onboarding
+                    // would tear down OnboardingView and reset it to slide 1.
+                    .id(selectedLanguage)
             } else {
                 OnboardingView()
                     .transition(.opacity)
             }
         }
         .environment(\.locale, locale)
-        // 🍏 FIX: Attaching the ID pattern here forces SwiftUI to safely dismantle
-        // internal navigation element hierarchies and recompute text metrics across
-        // headers and tabs instantly whenever the selected language changes.
-        .id(selectedLanguage)
     }
 }
 
