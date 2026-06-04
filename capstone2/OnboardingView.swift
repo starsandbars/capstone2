@@ -20,7 +20,7 @@ struct OnboardingView: View {
 
     @State private var currentSlide: OnboardingSlide = .welcome
     @State private var nameInput = ""
-    @State private var selectedHabits: Set<UUID> = []
+    @State private var selectedHabits: Set<Int> = []
     @State private var notificationGranted: Bool? = nil
     @State private var slideOffset: CGFloat = 0
     @State private var animateContent = false
@@ -38,25 +38,25 @@ struct OnboardingView: View {
                     .padding(.top, 60)
                     .padding(.bottom, 8)
 
-                // Slide content
-                TabView(selection: $currentSlide) {
+                // Slide content — ZStack so only the active slide is visible.
+                // No swipe gesture: users can only advance via the CTA button.
+                ZStack {
                     WelcomeSlide(onNext: nextSlide)
-                        .tag(OnboardingSlide.welcome)
+                        .opacity(currentSlide == .welcome ? 1 : 0)
                     NameSlide(nameInput: $nameInput, onNext: nextSlide)
-                        .tag(OnboardingSlide.name)
+                        .opacity(currentSlide == .name ? 1 : 0)
                     TourSlide(onNext: nextSlide)
-                        .tag(OnboardingSlide.tour)
+                        .opacity(currentSlide == .tour ? 1 : 0)
                     HabitsSlide(selectedHabits: $selectedHabits, onNext: nextSlide)
-                        .tag(OnboardingSlide.habits)
+                        .opacity(currentSlide == .habits ? 1 : 0)
                     NotificationsSlide(granted: $notificationGranted, onNext: nextSlide)
-                        .tag(OnboardingSlide.notifications)
+                        .opacity(currentSlide == .notifications ? 1 : 0)
                     LanguageSlide(onNext: nextSlide)
-                        .tag(OnboardingSlide.language)
+                        .opacity(currentSlide == .language ? 1 : 0)
                     ReadySlide(name: nameInput, onFinish: finish)
-                        .tag(OnboardingSlide.ready)
+                        .opacity(currentSlide == .ready ? 1 : 0)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.spring(response: 0.5, dampingFraction: 0.82), value: currentSlide)
+                .animation(.easeInOut(duration: 0.35), value: currentSlide)
             }
         }
     }
@@ -104,7 +104,10 @@ struct OnboardingView: View {
         storedName = nameInput.trimmingCharacters(in: .whitespaces)
 
         // Add selected suggested habits to SwiftData
-        for suggestion in SuggestedHabit.all where selectedHabits.contains(suggestion.id) {
+        let all = SuggestedHabit.all
+        for index in selectedHabits {
+            guard index < all.count else { continue }
+            let suggestion = all[index]
             let habit = Habit(
                 title: suggestion.title,
                 description: suggestion.description,
@@ -345,7 +348,7 @@ struct TourSlide: View {
 
 // MARK: - Slide 4: Habits
 struct HabitsSlide: View {
-    @Binding var selectedHabits: Set<UUID>
+    @Binding var selectedHabits: Set<Int>
     let onNext: () -> Void
 
     // Show a curated short list — 6 habits
@@ -362,16 +365,16 @@ struct HabitsSlide: View {
         ) {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 10) {
-                    ForEach(featured) { habit in
+                    ForEach(Array(featured.enumerated()), id: \.offset) { index, habit in
                         OnboardingHabitRow(
                             habit: habit,
-                            isSelected: selectedHabits.contains(habit.id)
+                            isSelected: selectedHabits.contains(index)
                         ) {
                             withAnimation(.spring(response: 0.3)) {
-                                if selectedHabits.contains(habit.id) {
-                                    selectedHabits.remove(habit.id)
+                                if selectedHabits.contains(index) {
+                                    selectedHabits.remove(index)
                                 } else {
-                                    selectedHabits.insert(habit.id)
+                                    selectedHabits.insert(index)
                                 }
                             }
                             UIImpactFeedbackGenerator(style: .light).impactOccurred()
